@@ -1,42 +1,37 @@
+// src/Login.js
 import React, { useState } from 'react';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { useHistory } from 'react-router-dom';
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const history = useHistory();
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    const auth = getAuth();
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      history.push("/profile"); 
-    } catch (error) {
-      console.error("Error signing in: ", error);
-    }
+  const handleLogin = (event) => {
+    event.preventDefault();
+    // Your login logic here
+    console.log("Email:", email);
+    console.log("Password:", password);
   };
 
   return (
     <div>
+      <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <input
           type="email"
+          placeholder="Enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
         />
         <input
           type="password"
+          placeholder="Enter password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
         />
-        <button type="submit">Login</button>
+        <button type="submit">Log In</button>
       </form>
     </div>
   );
-};
+}
 
 export default Login;
