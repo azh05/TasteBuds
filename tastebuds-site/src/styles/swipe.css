@@ -1,0 +1,54 @@
+.profile {
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    border-radius:20px;
+    padding: 5px;
+    margin: 10px;
+    width: 50%; 
+    flex-direction: column;
+    display: flex; 
+    align-items: center;
+}
+
+.swipe_buttons {
+    background-color: white;
+    border-width: 0;
+}
+
+#profile_img_body {
+    display:flex;
+    justify-content: space-between;
+}
+
+.swipe_head_text {
+    font-size: 3vw;
+    font-weight: bold;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    margin-top: 1vw;
+    margin-bottom: 0;
+}
+
+#profile_divider {
+    color: black;
+    background-color: black;
+    height: 2px;
+    width: 100%;
+    border: none;
+    margin-bottom: 0;
+    border-radius: 10px;
+}
+
+#profile_head {
+    display: flex;
+    justify-content: space-around;
+}
+
+#food_list {
+    margin-top: 1vw;
+}
+
+#food_list li {
+    font-size: 2vw;
+}
