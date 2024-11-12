@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../backend/firebase';  // Ensure Firebase is initialized correctly
 import '../App.css'; // Import CSS for external styling
 
 const Signup = () => {
@@ -10,9 +12,24 @@ const Signup = () => {
   const [gender, setGender] = useState('');
   const [cuisine, setCuisine] = useState('');
   const [photo, setPhoto] = useState(null);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleSaveProfile = (event) => {
+  const handleSaveProfile = async (event) => {
     event.preventDefault();
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      console.log('User created:', user);
+      setSuccess('Profile successfully created!');
+      setError('');
+    }  catch (error) {
+      console.error('Error creating user:', error.message);
+      setError(error.message);
+      setSuccess('');
+    }
+
     console.log("Profile saved:", {
       email,
       password,
