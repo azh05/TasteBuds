@@ -1,5 +1,5 @@
-// src/Login.js
 import React, { useState } from 'react';
+import '../App.css'; // Import CSS for external styling
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -7,28 +7,35 @@ function Login() {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    // Your login logic here
     console.log("Email:", email);
     console.log("Password:", password);
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Enter email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Log In</button>
+      <form className="login-form" onSubmit={handleLogin}>
+        <label>
+          Email:
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </label>
+
+        <label>
+          Password:
+          <input
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </label>
+
+        <button className="login-button" type="submit">Log In</button>
       </form>
     </div>
   );

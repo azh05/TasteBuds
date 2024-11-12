@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import '../App.css'; // Import CSS file for styling
 
 function HomePage() {
-    return(
-<div>
-    <h1>Welcome to TasteBuds</h1>
-    <p>Log in {" "}
-          <nav>
-            <Link to="/Login">Here!</Link>
-            </nav>
-        </p>
-        <p>
-          Don't have an account? Sign up{" "}
-          <nav>
-            <Link to="/signup">Here!</Link>
-            </nav>
-        </p>
+  return (
+    <div className="home-container">
+      <h1 className="home-title">Welcome to TasteBuds</h1>
+      <p className="home-text">
+        Log in{' '}
+        <Link className="home-link" to="/Login">
+          Here!
+        </Link>
+      </p>
+      <p className="home-text">
+        Don't have an account? Sign up{' '}
+        <Link className="home-link" to="/signup">
+          Here!
+        </Link>
+      </p>
     </div>
-    );
+  );
 }
 
 export default HomePage;
