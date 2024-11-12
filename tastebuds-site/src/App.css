@@ -175,3 +175,63 @@
   color: #0056b3;
   text-decoration: underline;
 }
+
+.centered-container {
+  display: grid;
+  place-items: center; /* Centers both horizontally and vertically */
+  height: 100vh; /* Full viewport height */
+}
+
+/* Reset default margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Center content vertically and horizontally */
+.scroll-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.scroll-title {
+  font-size: 36px;
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.profile-placeholder {
+  width: 200px;
+  height: 300px;
+  background-color: #f4f4f4;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  margin: 20px;
+}
+
+.arrow-button {
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  margin: 0 10px;
+}
+
+.arrow-button:hover {
+  color: #007bff;
+}
+
+/* Left arrow and right arrow */
+.left-arrow {
+  margin-right: 10px;
+}
+
+.right-arrow {
+  margin-left: 10px;
+}
