@@ -2,9 +2,9 @@ import React from "react";
 import Watermelon from "../watermelon.jpg"
 
 import "../styles/swipe.css"
-function SwipeProfile({ name, age, image, clickFunction, foodList }) {
+function SwipeProfile({ name, age, image, clickFunction, foodList, className }) {
     return (
-        <div className="profile_container">
+        <div className={`profile_container ${className}`}>
             <div className="profile_header">
                 <h1>{name}</h1>
                 <p>{age}</p>

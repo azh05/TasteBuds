@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import "../styles/swipe.css"
 import SwipeProfile from '../components/SwipeProfile';
-
-// Sharon like mexican food
 
 
 function SwipePage() {
@@ -17,23 +15,54 @@ function SwipePage() {
     ]); 
 
     const [index, setIndex] = useState(0);
+    const [isExiting, setIsExiting] = useState(false);
+    const [clickDirection, setClickDirection] = useState("");
 
     const handleClick = (isLeft) => {
-        if(isLeft) {
-            console.log("Good Clicked")
-        } else {
-            console.log("Bad Clicked")
-        }
+        if (isExiting) return;
 
-        setIndex((index) => (index + 1) % profiles.length); 
+        const direction = isLeft ? "left" : "right";
+        setClickDirection(direction); 
+        setIsExiting(true); // Start the exit animation
+
+
+        setTimeout(() => {  
+            setIndex((prevIndex) => (prevIndex + 1) % profiles.length);
+            setIsExiting(false);
+            setClickDirection("");
+          }, 300); // Match this to animation duration
+
     }
 
+    useEffect(() => {
+    
+        const handleKeyDown = (event) => {
+            if (event.key === "ArrowLeft") {
+                handleClick(true); // Simulate left button click
+            } else if (event.key === "ArrowRight") {
+                handleClick(false); // Simulate right button click
+            }
+        }
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+        }, [])
+
     return ( 
+        
         <div className="swipe_page_container">
+
             <SwipeProfile name={profiles[index].name} 
-            age={profiles[index].age} 
-            foodList={profiles[index].foodList}
-            clickFunction={handleClick}/>
+                age={profiles[index].age} 
+                foodList={profiles[index].foodList}
+                clickFunction={handleClick}
+                className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
+                />
+
+            
+                
         </div>
     );
 }
