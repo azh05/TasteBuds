@@ -1,0 +1,135 @@
+/* Profile container - add transition for sliding effect */
+.profile_container {
+    width: 500px;  
+    border-color: lightgray;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 10px;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    overflow: hidden; /* Ensure content inside doesn't overflow the container */
+}
+
+
+.profile_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    width: 100%; 
+    flex-wrap: nowrap; /* Prevents wrapping of child elements */
+}
+
+.profile_header h1 {
+    padding: 10px;
+    font-weight: bold;
+    font-size: 30px;
+    margin: 20px;
+}
+
+.profile_header p {
+    padding: 10px;
+    font-size: 25px;
+    margin: 20px;
+}
+
+.profile {
+    width: 500px;
+    height: 400px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    flex-direction: column; /* Make it column layout to stack the content */
+}
+
+.profile {
+    width: 500px;
+    height: 400px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    flex-direction: column; /* Ensure the content is stacked */
+}
+
+/* Style for food list at the bottom */
+.food-list {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Center the items horizontally */
+    gap: 10px; /* Space between food items */
+    padding: 10px;
+}
+
+.food-item {
+    color: white;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    background-color: rgba(200, 200, 200, 0.4); /* Optional background for each item */
+    padding: 5px 10px;
+    border-radius: 20px;
+    border-color: white;
+    border-width: 1px;
+    border-style:solid;
+}
+
+.profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
+}
+
+.button {
+    position: absolute;
+    background-color: rgba(256, 256, 256, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    bottom: 10px;
+}
+
+.button.good {
+    top: 10px;
+    left: 10px;
+}
+
+.button.bad {
+    top: 10px;
+    right: 10px;
+}
+
+.button:hover {
+    background-color: rgba(211, 211, 211, 0.5);
+}
+
+.swipe_page_container {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    height: 100vh; 
+}
