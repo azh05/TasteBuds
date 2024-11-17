@@ -50,6 +50,11 @@ function Login() {
         <button className="login-button" type="submit">Log In</button>
       </form>
     </div>
+    {error && (
+          <p className="error-message" style={{ color: 'red' }}>
+            {"Error: Incorrect Credentials. Please try again or reset password below."}
+          </p>
+        )}
     </div>
     
   );
