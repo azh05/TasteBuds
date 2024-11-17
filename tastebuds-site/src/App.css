@@ -37,6 +37,11 @@
   }
 }
 
+.div-container {
+  display: flex;
+  justify-content: center;
+}
+
 .signup-container {
   display: flex;
   flex-direction: column;

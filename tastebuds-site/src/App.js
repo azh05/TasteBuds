@@ -1,13 +1,13 @@
 // src/App.js
 import React from 'react';
-import SwipePage from './page/SwipePage';
+
 
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './components/Login';  // Ensure this path is correct
 import Signup from './pages/signup'; // Correct path for signup page
 import HomePage from './pages/home';  // Correct path for HomePage
-import ScrollPage from './pages/scroll'; // Correct path for ScrollPage
+import SwipePage from './pages/SwipePage';
 
 function App() {
   return (
