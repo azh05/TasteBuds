@@ -18,6 +18,12 @@ function HomePage() {
           Here!
         </Link>
       </p>
+      <p className="home-text">
+        Temp hyperlink to scrolling page{' '}
+        <Link className="home-link" to="/scroll">
+          Here!
+        </Link>
+      </p>
     </div>
   );
 }

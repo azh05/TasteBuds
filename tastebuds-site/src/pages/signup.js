@@ -47,7 +47,8 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-container">
+    <div className="div-container"> 
+      <div className="signup-container">
       <h2>Edit Your Profile</h2>
       <form className="signup-form" onSubmit={handleSaveProfile}>
       {error && (
@@ -144,6 +145,8 @@ const Signup = () => {
         <button className="save-button" type="submit">Save Profile</button>
       </form>
     </div>
+    </div>
+    
   );
 };
 
