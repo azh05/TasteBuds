@@ -30,6 +30,18 @@ app.get('/', (req, res) => {
   res.send('Server is running!');
 });
 
+app.get('/users', async (req, res) => {
+  try {
+    // Query all documents from the userprofiles collection
+    const users = await UserProfile.find({});
+    console.log("Fetched Users")
+    res.status(200).json(users); // Send the user profiles as JSON
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+})  
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import "../styles/swipe.css"
 import SwipeProfile from '../components/SwipeProfile';
 
+const endpoint = "http://localhost:5001/users"
+
 
 function SwipePage() {
     const [profiles, setProfiles] = useState([ 
@@ -35,7 +37,15 @@ function SwipePage() {
     }
 
     useEffect(() => {
-    
+        fetch(endpoint)
+            .then((response => response.json()))
+            .then((data) => {
+                console.log(data);
+                setProfiles(data);
+            })
+    }, [profiles]);
+
+    useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === "ArrowLeft") {
                 handleClick(true); // Simulate left button click
@@ -53,15 +63,15 @@ function SwipePage() {
     return ( 
         
         <div className="swipe_page_container">
-
-            <SwipeProfile name={profiles[index].name} 
+            { 
+            <SwipeProfile name={profiles[index].profileName} 
                 age={profiles[index].age} 
-                foodList={profiles[index].foodList}
+                foodList={profiles[index].cuisine}
                 clickFunction={handleClick}
                 className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
                 />
 
-            
+            }       
                 
         </div>
     );
