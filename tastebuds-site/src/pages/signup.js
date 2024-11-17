@@ -69,6 +69,12 @@ const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
+        {/* Conditional rendering for error message */}
+        {error && (
+          <p className="error-message" style={{ color: 'red' }}>
+            {error}
+          </p>
+        )}
 
         <label>
           Profile Name:

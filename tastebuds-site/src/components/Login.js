@@ -1,18 +1,30 @@
 import React, { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../backend/firebase'; // Import the auth object
 import '../App.css'; // Import CSS for external styling
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = (event) => {
+
+  const handleLogin = async (event) => {
     event.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
+    try {
+      // Authenticate with Firebase
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log('User logged in:', userCredential.user);
+    } catch (error) {
+      // Handle authentication errors
+      console.error('Error logging in:', error.message);
+      setError(error.message);
+    }
   };
 
   return (
-    <div className="login-container">
+    <div className="div-container">
+      <div className="login-container">
       <h2>Login</h2>
       <form className="login-form" onSubmit={handleLogin}>
         <label>
@@ -38,6 +50,8 @@ function Login() {
         <button className="login-button" type="submit">Log In</button>
       </form>
     </div>
+    </div>
+    
   );
 }
 
