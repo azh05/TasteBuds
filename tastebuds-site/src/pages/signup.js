@@ -17,29 +17,51 @@ const Signup = () => {
 
   const handleSaveProfile = async (event) => {
     event.preventDefault();
+
+    // Basic form validation
+    if (!email || !password || !profileName || !zipCode || !age || !gender || !cuisine) {
+      setError('Please fill out all fields.');
+      setSuccess('');
+      return;
+    }
     try {
+      // Send the data to the API
+      const response = await fetch('http://localhost:5001/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          profileName,
+          zipCode,
+          age,
+          gender,
+          cuisine,
+          photo,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create the user.');
+      }
+
+      const data = await response.json();
+      console.log('API Response:', data);
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       console.log('User created:', user);
       setSuccess('Profile successfully created!');
       setError('');
+
     }  catch (error) {
       console.error('Error creating user:', error.message);
       setError(error.message);
       setSuccess('');
-    }
-
-    console.log("Profile saved:", {
-      email,
-      password,
-      profileName,
-      zipCode,
-      age,
-      gender,
-      cuisine,
-      photo
-    });
+    };
   };
 
   const handlePhotoChange = (event) => {
@@ -69,12 +91,6 @@ const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
-        {/* Conditional rendering for error message */}
-        {error && (
-          <p className="error-message" style={{ color: 'red' }}>
-            {error}
-          </p>
-        )}
 
         <label>
           Profile Name:
@@ -141,5 +157,6 @@ const Signup = () => {
     </div>
   );
 };
+
 
 export default Signup;
