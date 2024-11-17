@@ -3,12 +3,13 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyB19QL37wHwxQgr-HucZLl-6d1_giGBhcA",
+  authDomain: "tastebuds-70acc.firebaseapp.com",
+  projectId: "tastebuds-70acc",
+  storageBucket: "tastebuds-70acc.firebasestorage.app",
+  messagingSenderId: "608301945207",
+  appId: "1:608301945207:web:335fe11905c950a412d172",
+  measurementId: "G-TQH1XXB0MM"
 };
 
 //Initialize getter functions
