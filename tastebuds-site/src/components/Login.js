@@ -3,10 +3,14 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../backend/firebase'; // Import the auth object
 import '../App.css'; // Import CSS for external styling
 
+import { useUser } from '../userinfo/UserContext';
+
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const { setUser } = useUser();
 
 
   const handleLogin = async (event) => {
@@ -14,6 +18,7 @@ function Login() {
     try {
       // Authenticate with Firebase
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      setUser(userCredential.user);
       console.log('User logged in:', userCredential.user);
     } catch (error) {
       // Handle authentication errors

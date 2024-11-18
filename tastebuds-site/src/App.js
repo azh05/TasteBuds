@@ -1,7 +1,7 @@
 // src/App.js
 import React from 'react';
 
-
+import { UserProvider } from './userinfo/UserContext';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './components/Login';  // Ensure this path is correct
@@ -11,17 +11,20 @@ import SwipePage from './pages/SwipePage';
 
 function App() {
   return (
-    <Router>
-      <div>
-        {/* Define Routes here */}
-        <Routes>
-          <Route path="/" element={<HomePage />} /> {/* Home page route */}
-          <Route path="/signup" element={<Signup />} /> {/* Signup page route */}
-          <Route path="/login" element={<Login />} /> {/* Login page route */}
-          <Route path="/scroll" element={<SwipePage />} /> {/* Scroll page route */}
-        </Routes>
-      </div>
-    </Router>
+    <UserProvider >
+      <Router>
+        <div>
+          {/* Define Routes here */}
+          <Routes>
+            <Route path="/" element={<HomePage />} /> {/* Home page route */}
+            <Route path="/signup" element={<Signup />} /> {/* Signup page route */}
+            <Route path="/login" element={<Login />} /> {/* Login page route */}
+            <Route path="/scroll" element={<SwipePage />} /> {/* Scroll page route */}
+          </Routes>
+        </div>
+      </Router>
+    </UserProvider>
+    
   );
 }
 
