@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../backend/firebase';  // Ensure Firebase is initialized correctly
 import '../App.css'; // Import CSS for external styling
 
 const Signup = () => {
@@ -10,19 +12,56 @@ const Signup = () => {
   const [gender, setGender] = useState('');
   const [cuisine, setCuisine] = useState('');
   const [photo, setPhoto] = useState(null);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleSaveProfile = (event) => {
+  const handleSaveProfile = async (event) => {
     event.preventDefault();
-    console.log("Profile saved:", {
-      email,
-      password,
-      profileName,
-      zipCode,
-      age,
-      gender,
-      cuisine,
-      photo
-    });
+
+    // Basic form validation
+    if (!email || !password || !profileName || !zipCode || !age || !gender || !cuisine) {
+      setError('Please fill out all fields.');
+      setSuccess('');
+      return;
+    }
+    try {
+      // Send the data to the API
+      const response = await fetch('http://localhost:5001/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          profileName,
+          zipCode,
+          age,
+          gender,
+          cuisine,
+          photo,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create the user.');
+      }
+
+      const data = await response.json();
+      console.log('API Response:', data);
+
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      console.log('User created:', user);
+      setSuccess('Profile successfully created!');
+      setError('');
+
+    }  catch (error) {
+      console.error('Error creating user:', error.message);
+      setError(error.message);
+      setSuccess('');
+    };
   };
 
   const handlePhotoChange = (event) => {
@@ -121,5 +160,6 @@ const Signup = () => {
     
   );
 };
+
 
 export default Signup;

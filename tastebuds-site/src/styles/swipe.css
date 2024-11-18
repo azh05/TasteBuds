@@ -1,14 +1,13 @@
 /* Profile container - add transition for sliding effect */
 .profile_container {
+    background-color: #f9f9f9;
     width: 500px;  
-    border-color: lightgray;
-    border-width: 1px;
-    border-style: solid;
     border-radius: 10px;
     flex-direction: column;
     display: flex;
     align-items: center;
     overflow: hidden; /* Ensure content inside doesn't overflow the container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -135,3 +134,32 @@
 }
 
 
+<<<<<<< HEAD
+=======
+.object {
+    position: absolute;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    opacity: 1;
+}
+
+.object.enter {
+    transform: translateX(0);
+}
+/* Exit to the left */
+.object.exit-left {
+    transform: translateX(-100%);
+    opacity: 0; /* Fade out */
+}
+
+/* Exit to the right */
+.object.exit-right {
+    transform: translateX(100%);
+    opacity: 0; /* Fade out */
+}
+
+/* 
+.object.exit {
+    transform: translateX(-100%); 
+    opacity: 0;
+} */
+>>>>>>> origin/main
