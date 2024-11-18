@@ -34,7 +34,6 @@ app.get('/users', async (req, res) => {
   try {
     // Query all documents from the userprofiles collection
     const users = await UserProfile.find({});
-    console.log("Fetched Users")
     res.status(200).json(users); // Send the user profiles as JSON
   } catch (error) {
     console.error('Error fetching users:', error);

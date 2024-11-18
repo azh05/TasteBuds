@@ -40,10 +40,10 @@ function SwipePage() {
         fetch(endpoint)
             .then((response => response.json()))
             .then((data) => {
-                console.log(data);
+                // console.log(data);
                 setProfiles(data);
             })
-    }, [profiles]);
+    }, []);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
