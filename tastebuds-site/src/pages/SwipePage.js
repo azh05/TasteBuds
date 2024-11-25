@@ -6,23 +6,16 @@ import SwipeProfile from '../components/SwipeProfile';
 // For user information
 import { useUser } from '../userinfo/UserContext';
 
-const endpoint = "http://localhost:5001/users"
+const endpoint = "http://localhost:5001/user"
 
 
 function SwipePage() {
     const { user } = useUser();
 
-    const [profiles, setProfiles] = useState([ 
-        { profileName: "", age: "", foodList: []},
-        { profileName: "Peter", age: 24, foodList: ["Italian", "Wine"] }, 
-        { profileName: "Sharon", age: 37, foodList: ["Mexican"] }, 
-        { profileName: "Min", age: 12, foodList: ["Food"] },
-        { profileName: "Gao", age: 44, foodList: ["Beverage"] },
-        { profileName: "David", age: 89, foodList: ["Orange"]},
-        { profileName: "Orange", age: 11, foodList: ["Ham", "Burger"] }
-    ]); 
+    const [profile, setProfile] = useState(
+        { profileName: "", age: "", foodList: []}
+    ); 
 
-    const [index, setIndex] = useState(0);
     const [isExiting, setIsExiting] = useState(false);
     const [clickDirection, setClickDirection] = useState("");
 
@@ -37,7 +30,7 @@ function SwipePage() {
         if(!user) {
             return; 
         }
-        const display_user = profiles[index];
+        const display_user = profile;
         const display_email = display_user.email;
 
         const user_email = user.email;
@@ -70,22 +63,19 @@ function SwipePage() {
         setClickDirection(direction); 
         setIsExiting(true); // Start the exit animation
 
-
+        
         setTimeout(() => {  
-            setIndex((prevIndex) => (prevIndex + 1) % profiles.length);
+            fetch(endpoint)
+                .then((response => response.json()))
+                .then((data) => {
+                    setProfile(data);
+                })
+
             setIsExiting(false);
             setClickDirection("");
           }, 400); // Match this to animation duration
 
     }
-
-    useEffect(() => {
-        fetch(endpoint)
-            .then((response => response.json()))
-            .then((data) => {
-                setProfiles(data);
-            })
-    }, []);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -106,9 +96,9 @@ function SwipePage() {
         
         <div className="swipe_page_container">
             { 
-            <SwipeProfile name={profiles[index].profileName} 
-                age={profiles[index].age} 
-                foodList={profiles[index].cuisine}
+            <SwipeProfile name={profile.profileName} 
+                age={profile.age} 
+                foodList={profile.cuisine}
                 clickFunction={handleClick}
                 className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
                 />

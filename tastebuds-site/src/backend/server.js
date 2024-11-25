@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 });
 
 // Getting all users from the database
-app.get('/users', async (req, res) => {
+app.get('/all_users', async (req, res) => {
   try {
     // Query all documents from the userprofiles collection
     const users = await UserProfile.find({});
@@ -42,9 +42,16 @@ app.get('/users', async (req, res) => {
   }
 })  
 
-
-
-
+app.get('/user', async (req, res) => {
+  try {
+    // Query one document from userprofiles
+    const user = await UserProfile.findOne({});
+    res.status(200).json(user); 
+  } catch (error) {
+    console.error('Error saving profile:', error);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
 
 // Start server
 app.listen(PORT, () => {
@@ -84,9 +91,12 @@ app.post('/past_likes', async (req, res) => {
     // Determine the field to update based on isLeft
     const updateField = isLeft ? 'past_likes' : 'past_dislikes';
 
-    // Updating the User 
+    // To delete users that were liked/disliked previously and were disliked/liked just now 
+    const reverseUpdateField = isLeft ? 'past_likes' : 'past_dislikes';
+
     const updateUserOperation = {
       $addToSet: { [updateField]: display_email }, // Add to array if not already present
+      $pull: { [reverseUpdateField]: display_email }, // Remove from the reverse field
     };
 
     // Update the user's document
@@ -100,24 +110,23 @@ app.post('/past_likes', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    
+    
     // Update the Display User
-    const updateDisplayUserOperation = {
-      $addToSet: { who_liked: user_email }
-    }
-    
-    if(isLeft) {
-      const updatedDisplayUser = await UserProfile.findOneAndUpdate( 
-        { email: display_email },
-        updateDisplayUserOperation, 
-        { new: true, upsert: true}
-      );
-  
-      if (!updatedDisplayUser) {
-        return res.status(404).json({ error: 'Display User not found' });
-      }
-    }
-    
+    const updateDisplayUserOperation = isLeft
+      ? { $addToSet: { who_liked: user_email } } // Add user_email to who_liked
+      : { $pull: { who_liked: user_email } };   // Remove user_email from who_liked
 
+    const updatedDisplayUser = await UserProfile.findOneAndUpdate(
+      { email: display_email },
+      updateDisplayUserOperation,
+      { new: true, upsert: true } // Options: return updated document, create if not exists
+    );
+
+    if (!updatedDisplayUser) {
+      return res.status(404).json({ error: 'Display User not found' });
+    }
+    
     res.status(200).json({ message: 'Profiles updated successfully', updatedUser });
   } catch (error) {
     console.error('Error updating profile:', error);
