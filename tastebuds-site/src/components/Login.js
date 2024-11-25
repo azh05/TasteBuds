@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../backend/firebase'; // Import the auth object
 import '../App.css'; // Import CSS for external styling
-
 import { useUser } from '../userinfo/UserContext';
+import { Link } from 'react-router-dom';
+
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -51,8 +52,9 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
-
-        <button className="login-button" type="submit">Log In</button>
+        <Link to='/'>
+            <button className="login-button" type="submit">Log In</button>
+        </Link>
       </form>
     </div>
     </div>

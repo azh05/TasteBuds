@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../backend/firebase';  // Ensure Firebase is initialized correctly
 import '../App.css'; // Import CSS for external styling
+import { Link } from 'react-router-dom';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -153,7 +154,9 @@ const Signup = () => {
           <input type="file" onChange={handlePhotoChange} />
         </label>
 
-        <button className="save-button" type="submit">Save Profile</button>
+        <Link to='/'>
+          <button className="save-button" type="submit">Save Profile</button>
+        </Link>
       </form>
     </div>
     </div>
