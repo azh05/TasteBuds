@@ -3,47 +3,79 @@ import React, { useState, useEffect } from 'react';
 import "../styles/swipe.css"
 import SwipeProfile from '../components/SwipeProfile';
 
-const endpoint = "http://localhost:5001/users"
+// For user information
+import { useUser } from '../userinfo/UserContext';
+
+const endpoint = "http://localhost:5001/user"
 
 
 function SwipePage() {
-    const [profiles, setProfiles] = useState([ 
-        { name: "Peter", age: 24, foodList: ["Italian", "Wine"] }, 
-        { name: "Sharon", age: 37, foodList: ["Mexican"] }, 
-        { name: "Min", age: 12, foodList: ["Food"] },
-        { name: "Gao", age: 44, foodList: ["Beverage"] },
-        { name: "David", age: 89, foodList: ["Orange"]},
-        { name: "Orange", age: 11, foodList: ["Ham", "Burger"] }
-    ]); 
+    const { user } = useUser();
 
-    const [index, setIndex] = useState(0);
+    const [profile, setProfile] = useState(
+        { profileName: "", age: "", foodList: []}
+    ); 
+
     const [isExiting, setIsExiting] = useState(false);
     const [clickDirection, setClickDirection] = useState("");
 
+    // Recall: LEFT  = GOOD 
+    //         RIGHT = BAD 
+    // TODO: We want to update the current-user and the liked-user object in MongoDB
+    //       so that the current-user object adds liked-user.id to their past_likes list
+    //       and the liked-user object adds current-user.id to their liked_users list
+    //       It should also update the current-user's past_unlikes list depending on what button is clicked
+    
+    const handleLike = async (isLeft) => {
+        if(!user) {
+            return; 
+        }
+        const display_user = profile;
+        const display_email = display_user.email;
+
+        const user_email = user.email;
+        console.log(user_email);
+        
+        const response = await fetch('http://localhost:5001/past_likes', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              display_email,
+              user_email,
+              isLeft
+            }),
+          });
+    
+          if (!response.ok) {
+            throw new Error('Failed to update likes.');
+          }
+    }
+
     const handleClick = (isLeft) => {
         if (isExiting) return;
+        
+        handleLike(isLeft);
+
 
         const direction = isLeft ? "left" : "right";
         setClickDirection(direction); 
         setIsExiting(true); // Start the exit animation
 
-
+        
         setTimeout(() => {  
-            setIndex((prevIndex) => (prevIndex + 1) % profiles.length);
+            fetch(endpoint)
+                .then((response => response.json()))
+                .then((data) => {
+                    setProfile(data);
+                })
+
             setIsExiting(false);
             setClickDirection("");
-          }, 300); // Match this to animation duration
+          }, 400); // Match this to animation duration
 
     }
-
-    useEffect(() => {
-        fetch(endpoint)
-            .then((response => response.json()))
-            .then((data) => {
-                // console.log(data);
-                setProfiles(data);
-            })
-    }, []);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -64,9 +96,9 @@ function SwipePage() {
         
         <div className="swipe_page_container">
             { 
-            <SwipeProfile name={profiles[index].profileName} 
-                age={profiles[index].age} 
-                foodList={profiles[index].cuisine}
+            <SwipeProfile name={profile.profileName} 
+                age={profile.age} 
+                foodList={profile.cuisine}
                 clickFunction={handleClick}
                 className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
                 />

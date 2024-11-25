@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../App.css'; // Import CSS file for styling
+import Logout from '../components/Logout';
 
 function HomePage() {
   return (
@@ -24,12 +25,15 @@ function HomePage() {
           Here!
         </Link>
       </p>
+  
       <p className="home-text">
         Temp hyperlink to matching page{' '}
         <Link className="home-link" to="/match">
           Here!
         </Link>
       </p>
+
+      <Logout /> 
     </div>
   );
 }
