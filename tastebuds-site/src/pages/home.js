@@ -30,6 +30,12 @@ function HomePage() {
           Here!
         </Link>
       </p>
+      <p className="home-text">
+        Temp hyperlink to resturant page{' '}
+        <Link className="home-link" to="/resturant">
+          Here!
+        </Link>
+      </p>
     </div>
   );
 }
