@@ -24,6 +24,12 @@ function HomePage() {
           Here!
         </Link>
       </p>
+      <p className="home-text">
+        Temp hyperlink to matching page{' '}
+        <Link className="home-link" to="/match">
+          Here!
+        </Link>
+      </p>
     </div>
   );
 }
