@@ -130,3 +130,17 @@ app.post('/past_likes', async (req, res) => {
     res.status(500).json({ error: 'Failed to update likes' });
   }
 });
+
+app.get('/likes', async(req, res) => {
+  try {
+    const { email } = req.query;
+    /* may conflict email; email */
+    const user = await UserProfile.findOne({email: email})
+    const who_liked = user.who_liked;
+    const liked_users = await UserProfile.find({email: { $in: who_liked}});
+    res.status(200).json(liked_users);
+  } catch (error) {
+    console.error('Error fetching users', error);
+    res.status(500).json({ error: 'Failed to fetch users'})
+  }
+})
