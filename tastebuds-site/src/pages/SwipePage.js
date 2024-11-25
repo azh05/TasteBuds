@@ -34,6 +34,9 @@ function SwipePage() {
     //       It should also update the current-user's past_unlikes list depending on what button is clicked
     
     const handleLike = async (isLeft) => {
+        if(!user) {
+            return; 
+        }
         const display_user = profiles[index];
         const display_email = display_user.email;
 
@@ -53,7 +56,7 @@ function SwipePage() {
           });
     
           if (!response.ok) {
-            throw new Error('Failed to update likes the user.');
+            throw new Error('Failed to update likes.');
           }
     }
 
