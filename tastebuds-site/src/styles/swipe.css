@@ -160,3 +160,87 @@
     transform: translateX(-100%); 
     opacity: 0;
 } */
+
+/* Container styles */
+.container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Form styles */
+  form {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  form input[type="text"] {
+    padding: 8px;
+    width: calc(100% - 20px);
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  form input[type="range"] {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  form button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Profile list styles */
+  .profile-list {
+    margin-top: 20px;
+  }
+  
+  .profile-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  .profile-card h3 {
+    margin: 0;
+    color: #333;
+  }
+  
+  .profile-card p {
+    margin: 5px 0;
+    color: #555;
+  }
+  
+  /* Loading and error styles */
+  .loading {
+    color: #007bff;
+    font-weight: bold;
+  }
+  
+  .error {
+    color: red;
+    font-weight: bold;
+  }
+  
