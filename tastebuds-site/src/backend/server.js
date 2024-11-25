@@ -88,30 +88,27 @@ app.post('/past_likes', async (req, res) => {
   const { display_email, user_email, isLeft } = req.body;
 
   try {
-    // Determine the field to update based on isLeft
+    // Determine the fields to update based on isLeft
     const updateField = isLeft ? 'past_likes' : 'past_dislikes';
+    const reverseUpdateField = isLeft ? 'past_dislikes' : 'past_likes';
 
-    // To delete users that were liked/disliked previously and were disliked/liked just now 
-    const reverseUpdateField = isLeft ? 'past_likes' : 'past_dislikes';
+    // Step 1: Remove from the reverse field (if needed)
+    await UserProfile.updateOne(
+      { email: user_email },
+      { $pull: { [reverseUpdateField]: display_email } }
+    );
 
-    const updateUserOperation = {
-      $addToSet: { [updateField]: display_email }, // Add to array if not already present
-      $pull: { [reverseUpdateField]: display_email }, // Remove from the reverse field
-    };
-
-    // Update the user's document
+    // Step 2: Add to the correct field
     const updatedUser = await UserProfile.findOneAndUpdate(
-      { email: user_email }, // Query to find the user
-      updateUserOperation,         // Update operation
-      { new: true, upsert: true } // Options: return updated document, create if not exists
+      { email: user_email },
+      { $addToSet: { [updateField]: display_email } },
+      { new: true, upsert: true } // Return the updated document, create if not exists
     );
 
     if (!updatedUser) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    
-    
     // Update the Display User
     const updateDisplayUserOperation = isLeft
       ? { $addToSet: { who_liked: user_email } } // Add user_email to who_liked
@@ -120,13 +117,13 @@ app.post('/past_likes', async (req, res) => {
     const updatedDisplayUser = await UserProfile.findOneAndUpdate(
       { email: display_email },
       updateDisplayUserOperation,
-      { new: true, upsert: true } // Options: return updated document, create if not exists
+      { new: true, upsert: true }
     );
 
     if (!updatedDisplayUser) {
       return res.status(404).json({ error: 'Display User not found' });
     }
-    
+
     res.status(200).json({ message: 'Profiles updated successfully', updatedUser });
   } catch (error) {
     console.error('Error updating profile:', error);
