@@ -3,15 +3,17 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../backend/firebase'; // Import the auth object
 import '../App.css'; // Import CSS for external styling
 import { useUser } from '../userinfo/UserContext';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+
 
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
   const { setUser } = useUser();
+  const navigate = useNavigate(); // Initialize useNavigate
+
 
 
   const handleLogin = async (event) => {
@@ -21,6 +23,7 @@ function Login() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
       console.log('User logged in:', userCredential.user);
+      navigate('/');
     } catch (error) {
       // Handle authentication errors
       console.error('Error logging in:', error.message);
@@ -52,16 +55,19 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
-        <Link to='/'>
-            <button className="login-button" type="submit">Log In</button>
-        </Link>
-      </form>
-    </div>
-    {error && (
+        
+        <button 
+            className="login-button" type="submit">Log In
+        </button>
+
+        {error && (
           <p className="error-message" style={{ color: 'red' }}>
             {"Error: Incorrect Credentials. Please try again or reset password below."}
           </p>
         )}
+
+      </form>
+    </div>
     </div>
     
   );
