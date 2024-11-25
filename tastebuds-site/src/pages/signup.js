@@ -25,6 +25,25 @@ const Signup = () => {
       setSuccess('');
       return;
     }
+
+    //age validation
+    if(age<18) {
+      setError('TasteBuds is restricted to users 18+');
+      setSuccess('');
+      return;
+    }
+    if(age > 110) {
+      setError('Please enter a valid age.');
+      setSuccess('');
+      return;
+    }
+    //zip code validation. must be 5 digits
+    if(zipCode < 10000 || zipCode > 99999) {
+      setError('Your zip code must be 5 digits. Please try again.');
+      setSuccess('');
+      return;
+    }
+
     try {
       // Send the data to the API
       const response = await fetch('http://localhost:5001/api/signup', {
@@ -74,6 +93,11 @@ const Signup = () => {
       <div className="signup-container">
       <h2>Edit Your Profile</h2>
       <form className="signup-form" onSubmit={handleSaveProfile}>
+      {error && (
+          <p className="error-message" style={{ color: 'red' }}>
+            {error}
+          </p>
+        )}
         <label>
           Email:
           <input
@@ -160,7 +184,6 @@ const Signup = () => {
       </form>
     </div>
     </div>
-    
   );
 };
 
