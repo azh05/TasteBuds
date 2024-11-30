@@ -12,7 +12,7 @@ function ProfilePage()  {
   const [password, setPassword] = useState('');
   const [profileName, setProfileName] = useState('Name');
   const [zipCode, setZipCode] = useState('');
-  const [age, setAge] = useState('');
+  const [age, setAge] = useState('20');
   const [gender, setGender] = useState('');
   const [cuisine, setCuisine] = useState(["Chinese", "Thai", "Mexican"]);
   const [availableTags, setAvailableTags] = useState(["Italian", "Indian", "Japanese", "American", "Other"]);
@@ -172,7 +172,7 @@ const handleDeleteTag = (tag) => {
         ) : (
           <p class = "name" >{profileName},</p>
         )}
-        <p class = "name"> 20</p>
+        <p class = "name"> {age}</p>
         <div class = "edit-button-container">
         {!editingState.name && (
          <button 
