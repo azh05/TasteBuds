@@ -30,28 +30,28 @@ app.get('/', (req, res) => {
   res.send('Server is running!');
 });
 
-// Getting all users from the database
-app.get('/all_users', async (req, res) => {
-  try {
-    // Query all documents from the userprofiles collection
-    const users = await UserProfile.find({});
-    res.status(200).json(users); // Send the user profiles as JSON
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    res.status(500).json({ error: 'Failed to fetch users' });
-  }
-})  
+// // Getting all users from the database
+// app.get('/all_users', async (req, res) => {
+//   try {
+//     // Query all documents from the userprofiles collection
+//     const users = await UserProfile.find({});
+//     res.status(200).json(users); // Send the user profiles as JSON
+//   } catch (error) {
+//     console.error('Error fetching users:', error);
+//     res.status(500).json({ error: 'Failed to fetch users' });
+//   }
+// })  
 
-app.get('/user', async (req, res) => {
-  try {
-    // Query one document from userprofiles
-    const user = await UserProfile.findOne({});
-    res.status(200).json(user); 
-  } catch (error) {
-    console.error('Error saving profile:', error);
-    res.status(500).json({ error: 'Failed to fetch users' });
-  }
-});
+// app.get('/user', async (req, res) => {
+//   try {
+//     // Query one document from userprofiles
+//     const user = await UserProfile.findOne({});
+//     res.status(200).json(user); 
+//   } catch (error) {
+//     console.error('Error saving profile:', error);
+//     res.status(500).json({ error: 'Failed to fetch users' });
+//   }
+// });
 
 // Start server
 app.listen(PORT, () => {
@@ -83,64 +83,64 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-// updating the users past_likes and past_dislikes page
-app.post('/past_likes', async (req, res) => {
-  const { display_email, user_email, isLeft } = req.body;
+// // updating the users past_likes and past_dislikes page
+// app.post('/past_likes', async (req, res) => {
+//   const { display_email, user_email, isLeft } = req.body;
 
-  try {
-    // Determine the fields to update based on isLeft
-    const updateField = isLeft ? 'past_likes' : 'past_dislikes';
-    const reverseUpdateField = isLeft ? 'past_dislikes' : 'past_likes';
+//   try {
+//     // Determine the fields to update based on isLeft
+//     const updateField = isLeft ? 'past_likes' : 'past_dislikes';
+//     const reverseUpdateField = isLeft ? 'past_dislikes' : 'past_likes';
 
-    // Step 1: Remove from the reverse field (if needed)
-    await UserProfile.updateOne(
-      { email: user_email },
-      { $pull: { [reverseUpdateField]: display_email } }
-    );
+//     // Step 1: Remove from the reverse field (if needed)
+//     await UserProfile.updateOne(
+//       { email: user_email },
+//       { $pull: { [reverseUpdateField]: display_email } }
+//     );
 
-    // Step 2: Add to the correct field
-    const updatedUser = await UserProfile.findOneAndUpdate(
-      { email: user_email },
-      { $addToSet: { [updateField]: display_email } },
-      { new: true, upsert: true } // Return the updated document, create if not exists
-    );
+//     // Step 2: Add to the correct field
+//     const updatedUser = await UserProfile.findOneAndUpdate(
+//       { email: user_email },
+//       { $addToSet: { [updateField]: display_email } },
+//       { new: true, upsert: true } // Return the updated document, create if not exists
+//     );
 
-    if (!updatedUser) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+//     if (!updatedUser) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
 
-    // Update the Display User
-    const updateDisplayUserOperation = isLeft
-      ? { $addToSet: { who_liked: user_email } } // Add user_email to who_liked
-      : { $pull: { who_liked: user_email } };   // Remove user_email from who_liked
+//     // Update the Display User
+//     const updateDisplayUserOperation = isLeft
+//       ? { $addToSet: { who_liked: user_email } } // Add user_email to who_liked
+//       : { $pull: { who_liked: user_email } };   // Remove user_email from who_liked
 
-    const updatedDisplayUser = await UserProfile.findOneAndUpdate(
-      { email: display_email },
-      updateDisplayUserOperation,
-      { new: true, upsert: true }
-    );
+//     const updatedDisplayUser = await UserProfile.findOneAndUpdate(
+//       { email: display_email },
+//       updateDisplayUserOperation,
+//       { new: true, upsert: true }
+//     );
 
-    if (!updatedDisplayUser) {
-      return res.status(404).json({ error: 'Display User not found' });
-    }
+//     if (!updatedDisplayUser) {
+//       return res.status(404).json({ error: 'Display User not found' });
+//     }
 
-    res.status(200).json({ message: 'Profiles updated successfully', updatedUser });
-  } catch (error) {
-    console.error('Error updating profile:', error);
-    res.status(500).json({ error: 'Failed to update likes' });
-  }
-});
+//     res.status(200).json({ message: 'Profiles updated successfully', updatedUser });
+//   } catch (error) {
+//     console.error('Error updating profile:', error);
+//     res.status(500).json({ error: 'Failed to update likes' });
+//   }
+// });
 
-app.get('/likes', async(req, res) => {
-  try {
-    const { email } = req.query;
-    /* may conflict email; email */
-    const user = await UserProfile.findOne({email: email})
-    const who_liked = user.who_liked;
-    const liked_users = await UserProfile.find({email: { $in: who_liked}});
-    res.status(200).json(liked_users);
-  } catch (error) {
-    console.error('Error fetching users', error);
-    res.status(500).json({ error: 'Failed to fetch users'})
-  }
-})
+// app.get('/likes', async(req, res) => {
+//   try {
+//     const { email } = req.query;
+//     /* may conflict email; email */
+//     const user = await UserProfile.findOne({email: email})
+//     const who_liked = user.who_liked;
+//     const liked_users = await UserProfile.find({email: { $in: who_liked}});
+//     res.status(200).json(liked_users);
+//   } catch (error) {
+//     console.error('Error fetching users', error);
+//     res.status(500).json({ error: 'Failed to fetch users'})
+//   }
+// })
