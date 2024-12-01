@@ -5,6 +5,10 @@ require('dotenv').config(); // To use environment variables from a .env file
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { embedUser, recommendUser, pickRandomUser } = require('./recommend');
+
+const UserProfile = require('./models/UserProfile');
+const UserRec = require('./models/UserRec');
 
 const app = express();
 const PORT = process.env.PORT || 5001; //backend runs on port 5001
@@ -44,9 +48,54 @@ app.get('/all_users', async (req, res) => {
 
 app.get('/user', async (req, res) => {
   try {
-    // Query one document from userprofiles
-    const user = await UserProfile.findOne({});
-    res.status(200).json(user); 
+    const { email } = req.query;
+
+    // Query all documents from the userprofiles collection
+    const userEmbeds = await UserRec.find({});
+
+    const recUserEmail = recommendUser(userEmbeds, email);
+
+    // if null email
+    // Pick a random email 
+    if(!recUserEmail) { 
+      const userProfiles = await UserProfile.find({});
+      const randomEmail = pickRandomUser(userProfiles, email);
+
+      const updatedDisplayUser = await UserRec.findOneAndUpdate(
+        { email: email },
+        { $addToSet: { recent_interactions: randomEmail }},
+        { new: true, upsert: true }
+      );
+
+      const user = await UserProfile.findOne({email: randomEmail});
+
+      res.status(200).json(user);
+    } else {
+      const recUser = await UserProfile.findOne({email: recUserEmail});
+      const currUser = await UserRec.findOne({email: email});
+
+      // how long it will take for a seen user to be valid agains
+      const DELAY = 6;
+
+      if(currUser && currUser.recent_interactions && len(currUser.recent_interactions) > 6) {
+        // Update the recommendation collection 
+        await UserRec.updateOne(
+          { email: email },
+          { $pop: { recent_interactions : -1 }}
+        );
+      }
+      
+
+      const updatedDisplayUser = await UserRec.findOneAndUpdate(
+        { email: email },
+        { $addToSet: { recent_interactions: recUserEmail }},
+        { new: true, upsert: true }
+      );
+
+      res.status(200).json(recUser); 
+    }
+
+    
   } catch (error) {
     console.error('Error saving profile:', error);
     res.status(500).json({ error: 'Failed to fetch users' });
@@ -58,7 +107,7 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-const UserProfile = require('./models/UserProfile');
+
 
 app.post('/api/signup', async (req, res) => {
   const { email, password, profileName, zipCode, age, gender, cuisine, photo } = req.body;
@@ -105,6 +154,7 @@ app.post('/past_likes', async (req, res) => {
       { new: true, upsert: true } // Return the updated document, create if not exists
     );
 
+
     if (!updatedUser) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -123,6 +173,18 @@ app.post('/past_likes', async (req, res) => {
     if (!updatedDisplayUser) {
       return res.status(404).json({ error: 'Display User not found' });
     }
+
+
+    // Update Embedding
+    const updatedUserEmbed = await UserRec.findOneAndUpdate(
+      { email: user_email }, 
+      { $set: { embed_vector: embedUser(updatedUser) }}
+    )
+
+    const updatedDisplayEmbed = await UserRec.findOneAndUpdate(
+      { email: display_email }, 
+      { $set: { embed_vector: embedUser(updatedDisplayUser) }}
+    )
 
     res.status(200).json({ message: 'Profiles updated successfully', updatedUser });
   } catch (error) {

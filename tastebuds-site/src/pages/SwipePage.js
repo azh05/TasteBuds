@@ -27,6 +27,7 @@ function SwipePage() {
     //       It should also update the current-user's past_unlikes list depending on what button is clicked
     
     const handleLike = async (isLeft) => {
+        // console.log(user.email)
         if(!user) {
             return; 
         }
@@ -91,6 +92,14 @@ function SwipePage() {
             window.removeEventListener("keydown", handleKeyDown);
         };
         }, [])
+
+    useEffect(() => {
+        fetch(endpoint)
+                .then((response => response.json()))
+                .then((data) => {
+                    setProfile(data);
+                })
+    }, []);
 
     return ( 
         
