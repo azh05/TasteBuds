@@ -75,9 +75,9 @@ app.get('/user', async (req, res) => {
       const currUser = await UserRec.findOne({email: email});
 
       // how long it will take for a seen user to be valid agains
-      const DELAY = 6;
+      const DELAY = 10;
 
-      if(currUser && currUser.recent_interactions && len(currUser.recent_interactions) > 6) {
+      if(currUser && currUser.recent_interactions && len(currUser.recent_interactions) > DELAY) {
         // Update the recommendation collection 
         await UserRec.updateOne(
           { email: email },
