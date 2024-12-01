@@ -98,34 +98,43 @@ const SwipePage = () => {
     };
   }, [currentIndex, isExiting]);
 
+  // Get the number of profiles for the selected zip code
+  const availableProfilesCount = selectedZipCode === "All" 
+    ? profiles.length 
+    : profiles.filter((profile) => profile.zipCode === selectedZipCode).length;
+
   return (
     <div className="swipe_page_container">
-  {/* Dropdown for filtering by zip code */}
-  <div className="zip-code-dropdown">
-    <label htmlFor="zipCodeFilter">Filter by Zip Code:</label>
-    <select id="zipCodeFilter" value={selectedZipCode} onChange={handleZipCodeChange}>
-      {zipCodes.map((zip) => (
-        <option key={zip} value={zip}>
-          {zip}
-        </option>
-      ))}
-    </select>
-  </div>
+      {/* Dropdown for filtering by zip code */}
+      <div className="zip-code-dropdown">
+        <label htmlFor="zipCodeFilter">Filter by Zip Code:</label>
+        <select id="zipCodeFilter" value={selectedZipCode} onChange={handleZipCodeChange}>
+          {zipCodes.map((zip) => (
+            <option key={zip} value={zip}>
+              {zip}
+            </option>
+          ))}
+        </select>
+      </div>
 
-  {/* Swipe view for profiles */}
-  <div className="swipe-container">
-    {profiles.length > 0 && (
-      <SwipeProfile
-        name={profiles[currentIndex]?.profileName}
-        age={profiles[currentIndex]?.age}
-        foodList={profiles[currentIndex]?.cuisine}
-        clickFunction={handleClick}
-        className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
-      />
-    )}
-  </div>
-</div>
+      {/* Display number of profiles for selected zip code */}
+      <div className="available-profiles-count">
+        <p>Available profiles: {availableProfilesCount}</p>
+      </div>
 
+      {/* Swipe view for profiles */}
+      <div className="swipe-container">
+        {profiles.length > 0 && (
+          <SwipeProfile
+            name={profiles[currentIndex]?.profileName}
+            age={profiles[currentIndex]?.age}
+            foodList={profiles[currentIndex]?.cuisine}
+            clickFunction={handleClick}
+            className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 
