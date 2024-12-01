@@ -12,12 +12,12 @@ function FoodTags({foodList, isEditing, onDeleteTag}){
     
 
     return(
-        <div class = "tag-container">
+        <div className = "tag-container">
             {foodList.map((str, index) => (
-                <div class = "tag-item" key ={index}>
+                <div className = "tag-item" key ={index}>
                     <span>{str}</span>
                     {isEditing && (
-                        <button onClick={() => onDeleteTag(str)} class= "delete-button">X</button>
+                        <button onClick={() => onDeleteTag(str)} className= "delete-button">X</button>
                     )}
                 </div>
             ))}

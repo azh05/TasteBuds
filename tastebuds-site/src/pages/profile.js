@@ -133,22 +133,22 @@ const handleDeleteTag = (tag) => {
 
   return (
     <div >
-        <div class = "top-bar" > 
-            <button class= "icon-button"> 
+        <div className = "top-bar" > 
+            <button className= "icon-button"> 
                 <FaBars size = {34}/>
             </button>
         </div>
-        <div class = "horizontal-bar"></div>
-        <div class = "header-photo-container">
+        <div className = "horizontal-bar"></div>
+        <div className = "header-photo-container">
         <img id="header-photo" src={photo || Watermelon} alt="Header Photo" />
             <button 
-             class="upload-button" 
+             className="upload-button" 
              onClick={() => document.getElementById('photo-upload').click()}>
                 Change Photo
                 <input type="file" id="photo-upload" accept="image/*" onChange={handlePhotoChange}/>
             </button>
         </div>
-        <div class = "food-icon" onClick={() => setShowPicker(!showPicker)}>
+        <div className = "food-icon" onClick={() => setShowPicker(!showPicker)}>
             <span className="icon-display" >{icon}</span> 
         </div>
         {showPicker && (
@@ -160,7 +160,7 @@ const handleDeleteTag = (tag) => {
                 />
             </div>
       )}
-      <div class = "name-text">
+      <div className = "name-text">
         {editingState.name ? (
           <input
             className="name-input"
@@ -170,27 +170,27 @@ const handleDeleteTag = (tag) => {
             onKeyDown={(e) => handleKeyDown(e,'name')}
           />
         ) : (
-          <p class = "name" >{profileName},</p>
+          <p className = "name" >{profileName},</p>
         )}
-        <p class = "name"> {age}</p>
-        <div class = "edit-button-container">
+        <p className = "name"> {age}</p>
+        <div className = "edit-button-container">
         {!editingState.name && (
          <button 
-            class = "edit-button"
+            className = "edit-button"
             onClick={() => toggleEditing('name')}> 
             <MdEdit size = {20}/>
           </button>
         )}
         </div>
       </div>
-      <div ref = {cuisineEditRef} class = "food-tags-display"> 
+      <div ref = {cuisineEditRef} className = "food-tags-display"> 
         <FoodTags 
         foodList ={cuisine} 
         isEditing={editingState.cuisine}
         onDeleteTag={handleDeleteTag}
         />
-        <div class = "edit-button-container-2">
-          <div class = "edit-button-container">
+        <div className = "edit-button-container-2">
+          <div className = "edit-button-container">
             {!editingState.cuisine &&(
             <button
               class = "edit-button"
@@ -212,19 +212,19 @@ const handleDeleteTag = (tag) => {
         {canAddTag && (
                 <div className="available-tags-list">
                     {availableTags.map((tag, index) => (
-                        <button class = "tag-item" key={index} onClick={() => handleCuisineChange(tag)} className="available-tag">
+                        <button class = "tag-item available-tag" key={index} onClick={() => handleCuisineChange(tag)}>
                             {tag}
                         </button>
                     ))}
                 </div>
             )}
         {!canDelete && (
-          <p class = "error-message">Must have at least one food tag!</p>
+          <p className = "error-message">Must have at least one food tag!</p>
         )}
       </div>
-      <div class = "bio-container">
-        <p class ="section-text">About Me:</p>
-        <div class = "bio-body">
+      <div className = "bio-container">
+        <p className ="section-text">About Me:</p>
+        <div className = "bio-body">
         {editingState.bio ? (
           <textarea
             className="bio-input"
@@ -236,13 +236,13 @@ const handleDeleteTag = (tag) => {
             maxLength={maxCharacters}
           />
         ) : (
-          <p class= "bio-text">{bio}</p>
+          <p className= "bio-text">{bio}</p>
         )}
         </div>
         
-        <div class = "edit-bio-container">
-          <div class = "edit-button-container">
-            <button class = "edit-button"
+        <div className = "edit-bio-container">
+          <div className = "edit-button-container">
+            <button className = "edit-button"
             onClick={() => toggleEditing('bio')}> 
               <MdEdit size = {20}/>
             </button>
