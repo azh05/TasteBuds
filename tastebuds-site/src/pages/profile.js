@@ -193,7 +193,7 @@ const handleDeleteTag = (tag) => {
           <div className = "edit-button-container">
             {!editingState.cuisine &&(
             <button
-              class = "edit-button"
+              className = "edit-button"
               onClick={() => toggleEditing('cuisine')}>
               <MdEdit size = {20}/>
             </button>
@@ -203,7 +203,7 @@ const handleDeleteTag = (tag) => {
         </div>
         {editingState.cuisine &&(
            <button
-           class = "add-button"
+           className = "add-button"
            onClick = {handleAddButton}
            >
             <IoAdd size={20}/>
@@ -212,7 +212,7 @@ const handleDeleteTag = (tag) => {
         {canAddTag && (
                 <div className="available-tags-list">
                     {availableTags.map((tag, index) => (
-                        <button class = "tag-item available-tag" key={index} onClick={() => handleCuisineChange(tag)}>
+                        <button className = "tag-item available-tag" key={index} onClick={() => handleCuisineChange(tag)}>
                             {tag}
                         </button>
                     ))}
