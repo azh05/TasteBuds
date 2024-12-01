@@ -34,6 +34,12 @@ function HomePage() {
       </p>
 
       <Logout /> 
+      <p className="home-text">
+        Temp hyperlink to profile page{' '}
+        <Link className="home-link" to= "/profile">
+          Here!
+        </Link>
+      </p>
     </div>
   );
 }
