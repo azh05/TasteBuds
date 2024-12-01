@@ -176,11 +176,6 @@ const Signup = () => {
           </select>
         </label>
 
-        <label>
-          Upload Photo:
-          <input type="file" onChange={handlePhotoChange} />
-        </label>
-
           <button className="save-button" type="submit">Save Profile</button>
       </form>
     </div>
