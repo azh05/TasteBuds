@@ -1,18 +1,20 @@
 const mongoose = require('mongoose');
-const genderChoices = ['Prefer not to say', 'Male', 'Female', 'Non-Binary'];
-const cuisineChoices = ['Italian', 'Mexican', 'Japanese', 'Indian', 'Chinese', 'American', 'Other']
+const genderChoices = ['prefer not to say', 'male', 'female', 'non-binary'];
+const cuisineChoices = ['italian', 'mexican', 'japanese', 'indian', 'chinese', 'american', 'other']
 
-String.prototype.hashCode = function() {
-    var hash = 0,
-        i, chr;
-    if (this.length === 0) return hash;
-    for (i = 0; i < this.length; i++) {
-        chr = this.charCodeAt(i);
-        hash = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
+function hashCode(str) {
+    if(!str) {
+        return 0;
+    }
+    
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash |= 0; // Convert to 32bit integer
     }
     return hash;
-}
+  }
   
 
 function cosineSimilarity(A, B) {
@@ -53,20 +55,23 @@ function argmin(arr) {
 // user follows the UserProfile schema
 // Embed info into a 5D vector
 function embedUser(user) {
-    const { age, gender, cuisine, past_likes, past_dislikes, who_liked } = user;
+    const { age, gender, cuisine, past_likes, past_dislikes, who_liked, email } = user;
 
-    const genderID = genderChoices.indexOf(gender);
-    const cuisineID = cuisineChoices.indexOf(cuisine);
-    const past_likes_ID = past_likes.reduce((total, str) => total + str.hashCode(), 0);
-    const past_dislikes_ID = past_dislikes.reduce((total, str) => total + str.hashCode(), 0);
-    const who_liked_ID = who_liked.reduce((total, str) => total + str.hashCode(), 0);
+    const genderID = gender ? genderChoices.indexOf(gender.toLowerCase()) : 0;
+    const cuisineID = cuisine ? cuisineChoices.indexOf(cuisine.toLowerCase()) : 0;
+    const past_likes_ID = past_likes ? past_likes.reduce((total, str) => total + hashCode(str), 0) : 0;
+    const past_dislikes_ID = past_dislikes ? past_dislikes.reduce((total, str) => total + hashCode(str), 0) : 0;
+    const who_liked_ID = who_liked ? who_liked.reduce((total, str) => total + hashCode(str), 0) : 0;
 
-    return [ age, genderID, cuisineID, past_likes_ID, past_dislikes_ID, who_liked_ID ];
+    return [age, genderID, cuisineID, past_likes_ID, past_dislikes_ID, who_liked_ID];
 }
 
 // Pick a random user
-function pickRandomUser(userList, userEmail) {
-    const candidateUsers = userList.filter(candidate => candidate.email !== userEmail);
+function pickRandomUser(userList, userEmail, recent_interactions) {
+    const candidateUsers = userList.filter(
+        candidate => candidate.email !== userEmail && !recent_interactions.includes(candidate.email)
+    );
+
 
     return candidateUsers[Math.floor(Math.random() * candidateUsers.length)].email;
 }
@@ -82,8 +87,6 @@ function recommendUser(userList, userEmail) {
         // Add to the database and return someone random
         return null;
     }
-
-    console.log(currentUser);
     
     // Getting emails of users that were recently seen
     const { recent_interactions } = currentUser;
@@ -93,6 +96,11 @@ function recommendUser(userList, userEmail) {
         candidate.email !== userEmail && !(candidate.email in recent_interactions)
     }); 
 
+    // No Candidates
+    if(candidateUsers.length == 0) {
+        return null; 
+    }
+
     // Calculating Cosine Similarity between their embed_vectors 
     const cos_sims = candidateUsers.map(candidate => {
         return cosineSimilarity(currentUser.embed_vector, candidate.embed_vector);
@@ -100,6 +108,10 @@ function recommendUser(userList, userEmail) {
 
     // Most similar user
     const most_sim_idx = argmin(cos_sims);
+
+    if(!most_sim_idx) {
+        return null;
+    }
 
     return candidateUsers[most_sim_idx].email;
 }

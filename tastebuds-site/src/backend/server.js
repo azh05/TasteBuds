@@ -55,40 +55,55 @@ app.get('/user', async (req, res) => {
 
     const recUserEmail = recommendUser(userEmbeds, email);
 
+    // User who is logged in
+    const currUser = await UserRec.findOne({email: email});
+
+    // how long it will take for a seen user to be valid agains
+    const DELAY = 10;
+
     // if null email
     // Pick a random email 
     if(!recUserEmail) { 
       const userProfiles = await UserProfile.find({});
-      const randomEmail = pickRandomUser(userProfiles, email);
+
+      const currUserInteractions = currUser ?  currUser.recent_interactions : [];
+
+      const randomEmail = pickRandomUser(userProfiles, email, currUserInteractions);
 
       const updatedDisplayUser = await UserRec.findOneAndUpdate(
         { email: email },
-        { $addToSet: { recent_interactions: randomEmail }},
+        { $addToSet: { recent_interactions: randomEmail }, },
         { new: true, upsert: true }
       );
 
-      const user = await UserProfile.findOne({email: randomEmail});
+      const randomUser = await UserProfile.findOne({email: randomEmail});
 
-      res.status(200).json(user);
-    } else {
-      const recUser = await UserProfile.findOne({email: recUserEmail});
-      const currUser = await UserRec.findOne({email: email});
-
-      // how long it will take for a seen user to be valid agains
-      const DELAY = 10;
-
-      if(currUser && currUser.recent_interactions && len(currUser.recent_interactions) > DELAY) {
+      if(currUser && currUser.recent_interactions && currUser.recent_interactions.length > DELAY) {
         // Update the recommendation collection 
         await UserRec.updateOne(
           { email: email },
-          { $pop: { recent_interactions : -1 }}
+          { $pop: { recent_interactions : -1 }, $set: {email: email}},
+          { new: true, upsert: true }
+        );
+      }
+
+      res.status(200).json(randomUser);
+    } else {
+      const recUser = await UserProfile.findOne({email: recUserEmail});
+     
+      if(currUser && currUser.recent_interactions && currUser.recent_interactions.length > DELAY) {
+        // Update the recommendation collection 
+        await UserRec.updateOne(
+          { email: email },
+          { $pop: { recent_interactions : -1 }, $set: {email: email}},
+          { new: true, upsert: true }
         );
       }
       
 
       const updatedDisplayUser = await UserRec.findOneAndUpdate(
         { email: email },
-        { $addToSet: { recent_interactions: recUserEmail }},
+        { $addToSet: { recent_interactions: recUserEmail }, $set: {email: email}},
         { new: true, upsert: true }
       );
 
