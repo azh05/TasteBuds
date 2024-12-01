@@ -1,0 +1,242 @@
+.icon-button{
+    border: none;
+    background: none;
+    transition-duration: 0.4s;
+}
+
+.icon-button :hover{
+    background-color: #000000; /* Green */
+    color: white;
+    border-radius: 4px;
+}
+
+.top-bar{
+    display: flex;
+    justify-content: flex-end;
+    max-width: 98%;
+    padding-top: 5px;
+    margin: 0 auto;
+}
+
+.horizontal-bar{
+    width: 98%; 
+    height: 3px; 
+    background-color: #000;
+    margin: 0 auto;
+}
+
+.header-photo-container {
+    width: 96%; 
+    height: 300px;
+    text-align: center;
+    margin: 0 auto;
+    padding-top: 10px;
+    position: relative;
+}
+
+#header-photo {
+    width: 100%; 
+    max-height: 300px; 
+    object-fit: cover; /* Crops the image to fit the container */
+}
+
+#photo-upload {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%; 
+    opacity: 0; 
+    cursor: pointer; 
+}
+
+.upload-button {
+    position: absolute;
+    bottom: 1px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.food-icon {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    margin-left: 7%;
+    top: -40px;
+}
+
+.food-icon :hover{
+    background-color: rgba(0, 0, 0, 0.1);
+
+}
+
+.icon-display{
+    
+    font-size: 5rem;
+    margin-right: 5%;
+}
+
+.emoji-picker-container{
+    position: absolute;
+    z-index: 2
+}
+
+.name-text{
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-left: 5%;
+    top: -40px;
+}
+
+
+.name{
+    font-size: 50px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    
+}
+
+.edit-button-container{
+    padding-top: 20px;
+    background-color: white;
+    border-radius: 4px;
+    
+}
+
+.edit-button{
+    height: fit-content;
+    width: fit-content;
+    background-color: white;
+    border-radius: 4px;
+    
+}
+
+.edit-button-container :hover{
+    background-color: #000000; 
+    color: white;
+    border-radius: 4px;
+}
+
+.name-input {
+    font-size: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.food-tags-display{
+    position: relative;
+    display: flex;
+    gap: 10px;
+    top: -30px;
+}
+
+.tag-container{
+    display: flex;
+    gap: 10px;
+    margin-left: 6%;
+}
+
+.tag-item{
+    position: relative;
+    border: 1px solid black;
+    display: flex;
+    padding: 5px;
+    border-radius: 10px;
+    top: 10px;
+    height: fit-content;
+
+}
+
+.edit-button-container-2{
+    position: relative;
+    bottom: 9px;
+    margin-left: 5px;
+}
+
+.delete-button {
+    border: none;
+    background-color: white;
+    margin-left: 4px;
+    cursor: pointer;
+}
+
+.error-message{
+    position: relative;
+    color: red;
+    padding-top: 12px;
+}
+
+.add-button{
+    position: relative;
+    height: fit-content;
+    width: fit-content;
+    background-color: white;
+    border-radius: 4px;
+    top: 10px;
+}
+
+.available-tags-list{
+    display: flex;
+    gap: 10px;
+    padding-top: 15px;
+}
+
+.bio-container{
+    height: 200px;
+    width: 35%;
+    border: 2px solid black;
+    margin-left: 5%;
+    padding: 10px;
+    position: relative;
+    cursor: text;
+}
+
+.section-text{
+    font-size: 20px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.bio-text{
+    font-size: 15px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    word-wrap: break-word; /* Ensures long words wrap to the next line */
+    overflow-wrap: break-word; /* Modern equivalent for word breaking */
+    white-space: normal;
+}
+
+.edit-bio-container{
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.bio-input{
+    position: absolute; /* Absolute positioning to overlap bio-text */
+  top: 0;
+  left: 0;
+  width: 100%; /* Match container's width */
+  height: 90%; /* Match container's height */
+  border: none; /* Remove default border for seamless integration */
+  padding: 0; /* Match padding for alignment */
+  font-size: 15px; /* Match bio-text font size */
+  font-family: Verdana, Geneva, Tahoma, sans-serif; /* Match bio-text font */
+  color: #333;
+  box-sizing: border-box; /* Ensure padding doesn't affect dimensions */
+  background-color: rgba(0, 0, 0, 0.2); /* Transparent background */
+  outline: none; /* Remove focus outline */
+    
+}
+
+.bio-body{
+    position: relative;
+    height: 90%;
+}
+
