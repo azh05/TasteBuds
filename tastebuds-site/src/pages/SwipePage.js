@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import "../styles/swipe.css";
 import SwipeProfile from "../components/SwipeProfile"; // Assuming this component handles the profile UI
 import { useUser } from "../userinfo/UserContext"; // To get the current user information
+import zipcodes from "zipcodes"; // Using the zipcodes package for city lookup
 
 const SwipePage = () => {
   const { user } = useUser(); // Current user info
   const [profiles, setProfiles] = useState([]); // Profiles displayed in the swipe view
   const [allProfiles, setAllProfiles] = useState([]); // All profiles fetched from the backend
-  const [zipCodes, setZipCodes] = useState([]); // Unique zip codes for the dropdown
-  const [selectedZipCode, setSelectedZipCode] = useState("All"); // Dropdown selection
+  const [cities, setCities] = useState([]); // Unique cities for the dropdown
+  const [selectedCity, setSelectedCity] = useState("All"); // Dropdown selection
   const [isExiting, setIsExiting] = useState(false); // For exit animation
   const [clickDirection, setClickDirection] = useState(""); // Direction of swipe (left or right)
   const [currentIndex, setCurrentIndex] = useState(0); // For tracking the current profile index
@@ -20,31 +21,42 @@ const SwipePage = () => {
       .then((users) => {
         setAllProfiles(users); // Store all profiles
         setProfiles(users); // Display all profiles initially
-        // Extract unique zip codes for the dropdown
-        const uniqueZipCodes = ["All", ...new Set(users.map((user) => user.zipCode))];
-        setZipCodes(uniqueZipCodes);
+
+        // Extract unique cities for the dropdown (including "All")
+        const uniqueCities = ["All", ...new Set(users.map((user) => getCityFromZip(user.zipCode)))];
+        setCities(uniqueCities);
       })
       .catch((error) => {
         console.error("Error fetching profiles:", error);
       });
   }, []);
 
-  // Handle zip code selection
-  const handleZipCodeChange = (event) => {
+  // Function to get city from zip code using the zipcodes library
+  const getCityFromZip = (zipCode) => {
+    const location = zipcodes.lookup(zipCode);
+    return location ? location.city : "No city provided";
+  };
+
+  // Handle city selection
+  const handleCityChange = (event) => {
     const selected = event.target.value;
-    setSelectedZipCode(selected);
+    setSelectedCity(selected);
+
+    let filteredProfiles = [];
     if (selected === "All") {
-      setProfiles(allProfiles); // Reset to show all profiles
+      filteredProfiles = allProfiles;
     } else {
-      const filteredProfiles = allProfiles.filter(
-        (profile) => profile.zipCode === selected
+      filteredProfiles = allProfiles.filter(
+        (profile) => getCityFromZip(profile.zipCode) === selected
       );
-      setProfiles(filteredProfiles); // Show only profiles with the selected zip code
     }
+
+    setProfiles(filteredProfiles); // Update displayed profiles
+    setCurrentIndex(0); // Reset to the first profile in the filtered list
   };
 
   const handleLike = async (isLeft) => {
-    if (!user) return;
+    if (!user || currentIndex >= profiles.length) return; // Prevent issues with invalid indexes
     const display_user = profiles[currentIndex];
     const display_email = display_user.email;
     const user_email = user.email;
@@ -62,12 +74,12 @@ const SwipePage = () => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to update likes.");
+      console.error("Failed to update likes.");
     }
   };
 
   const handleClick = (isLeft) => {
-    if (isExiting || currentIndex >= profiles.length) return;
+    if (isExiting || currentIndex >= profiles.length) return; // Prevent swiping beyond the last profile
 
     handleLike(isLeft);
     const direction = isLeft ? "left" : "right";
@@ -76,7 +88,7 @@ const SwipePage = () => {
 
     setTimeout(() => {
       if (currentIndex + 1 < profiles.length) {
-        setCurrentIndex(currentIndex + 1); // Move to the next profile
+        setCurrentIndex((prevIndex) => prevIndex + 1); // Move to the next profile
       }
       setIsExiting(false);
       setClickDirection("");
@@ -98,41 +110,40 @@ const SwipePage = () => {
     };
   }, [currentIndex, isExiting]);
 
-  // Get the number of profiles for the selected zip code
-  const availableProfilesCount = selectedZipCode === "All" 
-    ? profiles.length 
-    : profiles.filter((profile) => profile.zipCode === selectedZipCode).length;
+  // Get the number of profiles for the selected city
+  const availableProfilesCount = profiles.length;
 
   return (
     <div className="swipe_page_container">
-      {/* Dropdown for filtering by zip code */}
-      <div className="zip-code-dropdown">
-        <label htmlFor="zipCodeFilter">Filter by Zip Code:</label>
-        <select id="zipCodeFilter" value={selectedZipCode} onChange={handleZipCodeChange}>
-          {zipCodes.map((zip, index) => (
-            <option key={`${zip}-${index}`} value={zip}>
-              {zip}
+      {/* Dropdown for filtering by city */}
+      <div className="city-dropdown">
+        <label htmlFor="cityFilter">Filter by City:</label>
+        <select id="cityFilter" value={selectedCity} onChange={handleCityChange}>
+          {cities.map((city, index) => (
+            <option key={`${city}-${index}`} value={city}>
+              {city}
             </option>
           ))}
         </select>
       </div>
 
-      {/* Display number of profiles for selected zip code */}
+      {/* Display number of profiles for selected city */}
       <div className="available-profiles-count">
         <p>Available profiles: {availableProfilesCount}</p>
       </div>
 
       {/* Swipe view for profiles */}
       <div className="swipe-container">
-        {profiles.length > 0 && (
+        {availableProfilesCount > 0 ? (
           <SwipeProfile
-            //key={profiles[currentIndex]?.id || currentIndex}
             name={profiles[currentIndex]?.profileName}
             age={profiles[currentIndex]?.age}
             foodList={profiles[currentIndex]?.cuisine}
             clickFunction={handleClick}
             className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
           />
+        ) : (
+          <p>No profiles available for the selected city.</p>
         )}
       </div>
     </div>
