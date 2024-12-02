@@ -7,6 +7,8 @@ import { IoAdd } from "react-icons/io5";
 import Watermelon from "../watermelon.jpg";
 import FoodTags from '../components/foodtags';
 import Navbar from '../components/navigationbar';
+import { useUser } from '../userinfo/UserContext';
+
 
 function ProfilePage()  {
     const [email, setEmail] = useState('');
@@ -32,6 +34,8 @@ function ProfilePage()  {
 });
 const cuisineEditRef = useRef(null);
 const maxCharacters = 350;
+const { user } = useUser();
+
 
 
   const handlePhotoChange = (event) => {
@@ -129,7 +133,16 @@ const handleDeleteTag = (tag) => {
     };
 }, []);
 
-
+if (!user) {
+  return (
+    <div>
+      <Navbar />
+      <div className="not-logged-in">
+        <div>Must be Logged In</div>
+      </div>
+    </div>
+  );
+}
 
 
   return (

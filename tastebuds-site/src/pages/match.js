@@ -6,6 +6,7 @@ import MatchedProfile from '../components/MatchedProfile';
 import { useUser } from '../userinfo/UserContext'
 import Navbar from '../components/navigationbar';
 
+
 function Match() {
 
     const { user } = useUser();
@@ -33,6 +34,20 @@ function Match() {
             fetchData();
         } 
     }, [])
+
+
+    if (!user) {
+        return (
+          <div>
+            <Navbar />
+            <div className="not-logged-in">
+              <div>Must be Logged In</div>
+            </div>
+          </div>
+        );
+      }
+      
+
 /* errors because tries to evaluate info.name but it is set to null earlier, probably will run into the same issue with  */
     return (
     <div>

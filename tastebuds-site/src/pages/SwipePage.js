@@ -100,20 +100,27 @@ function SwipePage() {
                 })
     }, []);
 
+    if (!user) {
+        return (
+          <div>
+            <Navbar />
+            <div className="not-logged-in">
+              <div>Must be Logged In</div>
+            </div>
+          </div>
+        );
+      }      
+
     return ( 
     <div>
         <Navbar></Navbar>
         <div className="swipe_page_container">
-            { user ? 
             <SwipeProfile name={profile.profileName} 
                 age={profile.age} 
                 foodList={profile.cuisine}
                 clickFunction={handleClick}
                 className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
-                /> :
-                <div>Must be Logged In</div>
-
-                }       
+                /> 
             </div>
         </div>
     );
