@@ -7,6 +7,7 @@ import SwipeProfile from '../components/SwipeProfile';
 import { useUser } from '../userinfo/UserContext';
 
 import { FaBars } from 'react-icons/fa';
+import Navbar from '../components/NavigationBar';
 
 const endpoint = "http://localhost:5001/user"
 
@@ -96,12 +97,7 @@ function SwipePage() {
 
     return ( 
         <div>
-            <div className = "top-bar" > 
-                <button className= "icon-button"> 
-                    <FaBars size = {34}/>
-                </button>
-            </div>
-            <div className = "horizontal-bar"></div>
+            <Navbar></Navbar>
             <div className="swipe_page_container">
                 { 
                 <SwipeProfile name={profile.profileName} 

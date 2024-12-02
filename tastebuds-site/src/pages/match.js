@@ -4,8 +4,7 @@ import '../App.css'; // Import CSS for external styling
 import '../styles/match.css';
 import MatchedProfile from '../components/MatchedProfile';
 import { useUser } from '../userinfo/UserContext'
-import { FaBars } from 'react-icons/fa';
-
+import Navbar from '../components/NavigationBar';
 
 function Match() {
 
@@ -37,12 +36,7 @@ function Match() {
 /* errors because tries to evaluate info.name but it is set to null earlier, probably will run into the same issue with  */
     return (
     <div>
-        <div className = "top-bar" > 
-            <button className= "icon-button"> 
-                <FaBars size = {34}/>
-            </button>
-        </div>
-        <div className = "horizontal-bar"></div>
+        <Navbar></Navbar>
         <div className="match-page-total">
             <h1 className="match-title" >Matches</h1>
         <div className="horizontal-line" ></div>
