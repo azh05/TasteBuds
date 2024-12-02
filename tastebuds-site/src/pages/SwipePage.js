@@ -30,14 +30,13 @@ function SwipePage() {
     //       It should also update the current-user's past_unlikes list depending on what button is clicked
     
     const handleLike = async (isLeft) => {
+        // console.log(user.email)
         if(!user) {
             return; 
         }
         const display_user = profile;
         const display_email = display_user.email;
-
         const user_email = user.email;
-        console.log(user_email);
         
         const response = await fetch('http://localhost:5001/past_likes', {
             method: 'POST',
@@ -66,9 +65,8 @@ function SwipePage() {
         setClickDirection(direction); 
         setIsExiting(true); // Start the exit animation
 
-        
         setTimeout(() => {  
-            fetch(endpoint)
+            fetch(`${endpoint}?email=${user.email}`)
                 .then((response => response.json()))
                 .then((data) => {
                     setProfile(data);
@@ -76,7 +74,7 @@ function SwipePage() {
 
             setIsExiting(false);
             setClickDirection("");
-          }, 400); // Match this to animation duration
+          }, 500); // Match this to animation duration
 
     }
 
@@ -95,7 +93,16 @@ function SwipePage() {
         };
         }, [])
 
+    useEffect(() => {
+        fetch(endpoint)
+                .then((response => response.json()))
+                .then((data) => {
+                    setProfile(data);
+                })
+    }, []);
+
     return ( 
+<<<<<<< HEAD
         <div>
             <Navbar></Navbar>
             <div className="swipe_page_container">
@@ -106,6 +113,18 @@ function SwipePage() {
                     clickFunction={handleClick}
                     className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
                     />
+=======
+        
+        <div className="swipe_page_container">
+            { user ? 
+            <SwipeProfile name={profile.profileName} 
+                age={profile.age} 
+                foodList={profile.cuisine}
+                clickFunction={handleClick}
+                className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
+                /> :
+                <div>Must be Logged In</div>
+>>>>>>> d2c6e4673ec1ae0e2c5d9a754b559f9663c4e042
 
                 }       
             </div>
