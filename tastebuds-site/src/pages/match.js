@@ -4,7 +4,7 @@ import '../App.css'; // Import CSS for external styling
 import '../styles/match.css';
 import MatchedProfile from '../components/MatchedProfile';
 import { useUser } from '../userinfo/UserContext'
-
+import Navbar from '../components/NavigationBar';
 
 function Match() {
 
@@ -35,17 +35,19 @@ function Match() {
     }, [])
 /* errors because tries to evaluate info.name but it is set to null earlier, probably will run into the same issue with  */
     return (
+    <div>
+        <Navbar></Navbar>
         <div className="match-page-total">
             <h1 className="match-title" >Matches</h1>
         <div className="horizontal-line" ></div>
         <div className = "match-container">
             {info.map((user) =>  (
-                <MatchedProfile name={user.profileName} age={user.age} food={user.cuisine}/>
+                <MatchedProfile name={user.profileName} age={user.age} food={user.cuisine} key={user.email}/>
             ))}
             
         </div>
         </div>
-        
+    </div>
     )
 }
 
