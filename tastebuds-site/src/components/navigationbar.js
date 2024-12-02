@@ -1,14 +1,23 @@
 import React from 'react';
 import "../styles/navigationbar.css"
+import { useUser } from '../userinfo/UserContext';
 
-const Navbar = () => {
+function Navbar () {
+
+    const { user, setUser } = useUser(); // Ensure you destructure correctly
+
+    const handleLogout = () => {
+        console.log("Logged Out")
+        setUser(null); // Clear user from context and localStorage
+    };
+
   return (
 
 <nav className="navbar">
   <div className="navbar-left">
-    <a href="/" className="logo">
+    <p className="logo">
       TasteBuds
-    </a>
+    </p>
   </div>
   <div className="navbar-center">
     <ul className="nav-links">
@@ -21,9 +30,11 @@ const Navbar = () => {
       <li>
         <a href="/scroll">Swipe on Profiles</a>
       </li>
-      <li>
-        <a href="/Logout">Logout</a>
-      </li>
+      <div onClick={handleLogout}> 
+        <li>
+            <a href="/">Logout</a>
+        </li>
+      </div>
     </ul>
   </div>
 </nav>
