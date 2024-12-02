@@ -6,6 +6,8 @@ import SwipeProfile from '../components/SwipeProfile';
 // For user information
 import { useUser } from '../userinfo/UserContext';
 
+import { FaBars } from 'react-icons/fa';
+
 const endpoint = "http://localhost:5001/user"
 
 
@@ -93,18 +95,24 @@ function SwipePage() {
         }, [])
 
     return ( 
-        
-        <div className="swipe_page_container">
-            { 
-            <SwipeProfile name={profile.profileName} 
-                age={profile.age} 
-                foodList={profile.cuisine}
-                clickFunction={handleClick}
-                className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
-                />
+        <div>
+            <div className = "top-bar" > 
+                <button className= "icon-button"> 
+                    <FaBars size = {34}/>
+                </button>
+            </div>
+            <div className = "horizontal-bar"></div>
+            <div className="swipe_page_container">
+                { 
+                <SwipeProfile name={profile.profileName} 
+                    age={profile.age} 
+                    foodList={profile.cuisine}
+                    clickFunction={handleClick}
+                    className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
+                    />
 
-            }       
-                
+                }       
+            </div>
         </div>
     );
 }
