@@ -4,7 +4,7 @@ import '../App.css'; // Import CSS for external styling
 import '../styles/match.css';
 import MatchedProfile from '../components/MatchedProfile';
 import { useUser } from '../userinfo/UserContext'
-import Navbar from '../components/NavigationBar';
+import Navbar from '../components/navigationbar';
 
 function Match() {
 

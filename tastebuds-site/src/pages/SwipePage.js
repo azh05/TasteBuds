@@ -6,7 +6,7 @@ import SwipeProfile from '../components/SwipeProfile';
 // For user information
 import { useUser } from '../userinfo/UserContext';
 
-import Navbar from '../components/NavigationBar';
+import Navbar from '../components/navigationbar';
 
 const endpoint = "http://localhost:5001/user"
 

@@ -6,7 +6,7 @@ import { MdEdit } from "react-icons/md";
 import { IoAdd } from "react-icons/io5";
 import Watermelon from "../watermelon.jpg";
 import FoodTags from '../components/foodtags';
-import Navbar from '../components/NavigationBar';
+import Navbar from '../components/navigationbar';
 
 function ProfilePage()  {
     const [email, setEmail] = useState('');
