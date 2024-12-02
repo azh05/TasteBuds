@@ -6,7 +6,6 @@ import SwipeProfile from '../components/SwipeProfile';
 // For user information
 import { useUser } from '../userinfo/UserContext';
 
-import { FaBars } from 'react-icons/fa';
 import Navbar from '../components/NavigationBar';
 
 const endpoint = "http://localhost:5001/user"
@@ -102,19 +101,8 @@ function SwipePage() {
     }, []);
 
     return ( 
-<<<<<<< HEAD
-        <div>
-            <Navbar></Navbar>
-            <div className="swipe_page_container">
-                { 
-                <SwipeProfile name={profile.profileName} 
-                    age={profile.age} 
-                    foodList={profile.cuisine}
-                    clickFunction={handleClick}
-                    className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
-                    />
-=======
-        
+    <div>
+        <Navbar></Navbar>
         <div className="swipe_page_container">
             { user ? 
             <SwipeProfile name={profile.profileName} 
@@ -124,7 +112,6 @@ function SwipePage() {
                 className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
                 /> :
                 <div>Must be Logged In</div>
->>>>>>> d2c6e4673ec1ae0e2c5d9a754b559f9663c4e042
 
                 }       
             </div>
