@@ -114,14 +114,6 @@ const SwipePage = () => {
   // Get the number of profiles for the selected city
   const availableProfilesCount = profiles.length;
 
-  useEffect(() => {
-    fetch(endpoint)
-            .then((response => response.json()))
-            .then((data) => {
-                setProfile(data);
-            })
-}, []);
-
   if (!user) {
     return (
       <div>
