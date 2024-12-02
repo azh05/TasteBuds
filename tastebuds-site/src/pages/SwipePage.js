@@ -109,8 +109,8 @@ const SwipePage = () => {
       <div className="zip-code-dropdown">
         <label htmlFor="zipCodeFilter">Filter by Zip Code:</label>
         <select id="zipCodeFilter" value={selectedZipCode} onChange={handleZipCodeChange}>
-          {zipCodes.map((zip) => (
-            <option key={zip} value={zip}>
+          {zipCodes.map((zip, index) => (
+            <option key={`${zip}-${index}`} value={zip}>
               {zip}
             </option>
           ))}
@@ -126,6 +126,7 @@ const SwipePage = () => {
       <div className="swipe-container">
         {profiles.length > 0 && (
           <SwipeProfile
+            //key={profiles[currentIndex]?.id || currentIndex}
             name={profiles[currentIndex]?.profileName}
             age={profiles[currentIndex]?.age}
             foodList={profiles[currentIndex]?.cuisine}
