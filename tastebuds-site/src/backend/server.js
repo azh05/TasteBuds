@@ -105,9 +105,7 @@ app.get('/profile', async (req, res) => {
   }
 });
 
-
-
-//update user profile
+// update user profile
 app.put('/profile', async (req, res) => {
   const { email, profileName, bio, icon, cuisine } = req.body;
 
@@ -115,8 +113,8 @@ app.put('/profile', async (req, res) => {
     // Find the user and update the fields using database query logic
     const updatedUser = await UserProfile.findOneAndUpdate({ email: email },
       { 
-        $set: { profileName, bio, icon },
-         $addToSet: { cuisine: { $each: cuisine } } // Add cuisines without duplicating
+        $set: { profileName, bio, icon, cuisine },
+        //  $addToSet: { cuisine: { $each: cuisine } } // Add cuisines without duplicating
       },
       { new: true } // Return the updated document
     );
@@ -131,6 +129,7 @@ app.put('/profile', async (req, res) => {
     res.status(500).json({ error: 'Failed to update profile' });
   }
 });
+
 
 // updating the users past_likes and past_dislikes page
 app.post('/past_likes', async (req, res) => {

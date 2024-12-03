@@ -59,7 +59,6 @@ const maxCharacters = 350;
         // setProfileData(data);  // Set the profile data
         setProfileData((prev) => ({
           ...data,
-          icon: data.icon || '🍉', // Default to 🍉 if no icon is provided
         }));
 
       } catch (error) {
@@ -94,8 +93,7 @@ const handleSave = async (section) => {
       },
       // body: JSON.stringify(profileData), // Send the profileData as JSON in the body
       body: JSON.stringify({
-        ...profileData,
-        // icon: profileData.icon || '🍉', // Default to 🍉 if no icon is set
+        ...profileData
       }),
     });
 
@@ -185,21 +183,6 @@ const handleSaveAll = () => {
   handleSave('bio');
   // Optionally add more sections if needed
 };
-
-
-// const handleDeleteTag = (tag) => {
-//   if (profileData.cuisine.length > 1){
-//     console.log("delete tag");
-//     console.log(profileData.cuisine);
-//     setCuisine(profileData.cuisine.filter((t) => t !== tag)); // Remove the tag
-//     console.log(profileData.cuisine);
-//     setAvailableTags([...availableTags, tag]); // re-add to avilible tags
-//   }
-//   else {
-//     setCanDelete(false);
-//     setTimeout(() => setCanDelete(true), 2000);
-//   }
-// };
 
 const handleDeleteTag = (tag) => {
   if (profileData.cuisine.length > 1) {
