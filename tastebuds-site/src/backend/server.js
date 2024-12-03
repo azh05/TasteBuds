@@ -11,11 +11,19 @@ const UserProfile = require('./models/UserProfile');
 const UserRec = require('./models/UserRec');
 
 const app = express();
-const PORT = process.env.PORT || 5001; //backend runs on port 5001
 
 // Middleware
+// Use CORS middleware and specify which origins are allowed
+const corsOptions = {
+  origin: 'http://localhost:3000', // Allow only this origin
+  methods: 'GET, POST, PUT, DELETE', // Allow these HTTP methods
+  allowedHeaders: 'Content-Type', // Allow only this header
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(cors());
+const PORT = process.env.PORT || 5001; //backend runs on port 5001
+
 
 // Connect to MongoDB
 console.log('MONGO_URI:', process.env.MONGO_URI); // Add this before connecting to MongoDB
@@ -147,6 +155,46 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
+
+//get user profile
+app.get('/profile', async (req, res) => {
+  try {
+    // Query one document from userprofiles
+    const { email } = req.query;
+    const user = await UserProfile.findOne({email: email});
+    res.status(200).json(user); 
+  } catch (error) {
+    console.error('Error getting profile:', error);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+});
+
+// update user profile
+app.put('/profile', async (req, res) => {
+  const { email, profileName, bio, icon, cuisine } = req.body;
+
+  try {
+    // Find the user and update the fields using database query logic
+    const updatedUser = await UserProfile.findOneAndUpdate({ email: email },
+      { 
+        $set: { profileName, bio, icon, cuisine },
+        //  $addToSet: { cuisine: { $each: cuisine } } // Add cuisines without duplicating
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Profile updated successfully', updatedUser });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
+
 // updating the users past_likes and past_dislikes page
 app.post('/past_likes', async (req, res) => {
   const { display_email, user_email, isLeft } = req.body;
@@ -208,6 +256,7 @@ app.post('/past_likes', async (req, res) => {
   }
 });
 
+
 app.get('/likes', async(req, res) => {
   try {
     const { email } = req.query;
@@ -221,3 +270,4 @@ app.get('/likes', async(req, res) => {
     res.status(500).json({ error: 'Failed to fetch users'})
   }
 })
+
