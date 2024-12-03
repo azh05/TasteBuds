@@ -5,8 +5,12 @@ require('dotenv').config(); // To use environment variables from a .env file
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const { embedUser, recommendUser, pickRandomUser } = require('./recommend');
 
+// Recommendation and Zipcode Filtering system
+const { embedUser, recommendUser, pickRandomUser } = require('./recommend');
+const zipcodes = require("zipcodes");
+
+// Mongoose object types
 const UserProfile = require('./models/UserProfile');
 const UserRec = require('./models/UserRec');
 
@@ -29,6 +33,11 @@ mongoose.connect(process.env.MONGO_URI, {
   console.error('Error connecting to MongoDB:', error);
 });
 
+const getCityFromZip = (zipCode) => {
+  const location = zipcodes.lookup(zipCode);
+  return location ? location.city : "No city provided";
+};
+
 // Sample route
 app.get('/', (req, res) => {
   res.send('Server is running!');
@@ -48,11 +57,29 @@ app.get('/all_users', async (req, res) => {
 
 app.get('/user', async (req, res) => {
   try {
-    const { email } = req.query;
+    const { email, selected_city } = req.query;
 
     // Query all documents from the userprofiles collection
-    const userEmbeds = await UserRec.find({});
+    const userProfiles = await UserProfile.find({});
 
+    let userEmbeds;
+    if(selected_city && selected_city !== "All") {
+      // Filtering profiles by zipcode
+      const filteredUserProfiles = userProfiles.filter(
+        (profile) => getCityFromZip(profile.zipCode) === selected_city
+      );
+      const filteredEmails = filteredUserProfiles.map(user => user.email);
+
+      // Query all documents from the userrecs collection by zipcode
+      userEmbeds = await UserRec.find({ $or: [
+        { email: { $in: filteredEmails } },
+        { email: email }
+      ] });
+    } else {
+      userEmbeds = await UserRec.find({});
+    }
+      
+    // recommended user email
     const recUserEmail = recommendUser(userEmbeds, email);
 
     // User who is logged in
@@ -61,11 +88,12 @@ app.get('/user', async (req, res) => {
     // how long it will take for a seen user to be valid agains
     const DELAY = 10;
 
-    // if null email
-    // Pick a random email 
+    // if null email -> None avaiable 
+    
     if(!recUserEmail) { 
-      const userProfiles = await UserProfile.find({});
-
+      res.status(200).json(null); 
+      /* 
+      // Pick a random email 
       const currUserInteractions = currUser ?  currUser.recent_interactions : [];
 
       const randomEmail = pickRandomUser(userProfiles, email, currUserInteractions);
@@ -87,11 +115,10 @@ app.get('/user', async (req, res) => {
         );
       }
 
-      res.status(200).json(randomUser);
+      res.status(200).json(randomUser); */
     } else {
       const recUser = await UserProfile.findOne({email: recUserEmail});
-     
-      if(currUser && currUser.recent_interactions && currUser.recent_interactions.length > DELAY) {
+      if(currUser && currUser.recent_interactions && currUser.recent_interactions.length >= DELAY) {
         // Update the recommendation collection 
         await UserRec.updateOne(
           { email: email },
@@ -101,7 +128,7 @@ app.get('/user', async (req, res) => {
       }
       
 
-      const updatedDisplayUser = await UserRec.findOneAndUpdate(
+      const updatedUser = await UserRec.findOneAndUpdate(
         { email: email },
         { $addToSet: { recent_interactions: recUserEmail }, $set: {email: email}},
         { new: true, upsert: true }
@@ -193,12 +220,14 @@ app.post('/past_likes', async (req, res) => {
     // Update Embedding
     const updatedUserEmbed = await UserRec.findOneAndUpdate(
       { email: user_email }, 
-      { $set: { embed_vector: embedUser(updatedUser) }}
+      { $set: { embed_vector: embedUser(updatedUser) }},
+      { upsert: true, returnDocument: 'after' }
     )
 
     const updatedDisplayEmbed = await UserRec.findOneAndUpdate(
       { email: display_email }, 
-      { $set: { embed_vector: embedUser(updatedDisplayUser) }}
+      { $set: { embed_vector: embedUser(updatedDisplayUser) }},
+      { upsert: true, returnDocument: 'after' }
     )
 
     res.status(200).json({ message: 'Profiles updated successfully', updatedUser });

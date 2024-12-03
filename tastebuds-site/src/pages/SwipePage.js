@@ -15,6 +15,10 @@ const SwipePage = () => {
   const [clickDirection, setClickDirection] = useState(""); // Direction of swipe (left or right)
   const [currentIndex, setCurrentIndex] = useState(0); // For tracking the current profile index
 
+  const [profile, setProfile] = useState(
+    { profileName: "", age: "", foodList: []}
+); 
+
   // Fetch all user profiles when the component mounts
   useEffect(() => {
     fetch("http://localhost:5001/all_users") // Ensure this matches your backend URL
@@ -31,6 +35,15 @@ const SwipePage = () => {
         console.error("Error fetching profiles:", error);
       });
   }, []);
+
+  // Set first user
+    useEffect(() => {
+        fetch(`http://localhost:5001/user?email=${user.email}`)
+                .then((response => response.json()))
+                .then((data) => {
+                    setProfile(data);
+                })
+    }, []);
 
   // Function to get city from zip code using the zipcodes library
   const getCityFromZip = (zipCode) => {
@@ -53,12 +66,17 @@ const SwipePage = () => {
     }
 
     setProfiles(filteredProfiles); // Update displayed profiles
-    setCurrentIndex(0); // Reset to the first profile in the filtered list
+
+    fetch(`http://localhost:5001/user?email=${user.email}&selected_city=${selected}`)
+            .then((response => response.json()))
+            .then((data) => {
+                setProfile(data);
+            });
   };
 
   const handleLike = async (isLeft) => {
     if (!user || currentIndex >= profiles.length) return; // Prevent issues with invalid indexes
-    const display_user = profiles[currentIndex];
+    const display_user = profile;
     const display_email = display_user.email;
     const user_email = user.email;
 
@@ -88,11 +106,15 @@ const SwipePage = () => {
     setIsExiting(true);
 
     setTimeout(() => {
-      if (currentIndex + 1 < profiles.length) {
-        setCurrentIndex((prevIndex) => prevIndex + 1); // Move to the next profile
-      }
-      setIsExiting(false);
-      setClickDirection("");
+      
+        fetch(`http://localhost:5001/user?email=${user.email}&selected_city=${selectedCity}`)
+            .then((response => response.json()))
+            .then((data) => {
+                setProfile(data);
+            });
+
+        setIsExiting(false);
+        setClickDirection("");
     }, 400); // Match this to animation duration
   };
 
@@ -148,11 +170,11 @@ const SwipePage = () => {
 
       {/* Swipe view for profiles */}
       <div className="swipe-container">
-        {availableProfilesCount > 0 ? (
+        {availableProfilesCount > 0 && profile ? (
           <SwipeProfile
-            name={profiles[currentIndex]?.profileName}
-            age={profiles[currentIndex]?.age}
-            foodList={profiles[currentIndex]?.cuisine}
+            name={profile.profileName}
+            age={profile.age}
+            foodList={profile.cuisine}
             clickFunction={handleClick}
             className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
           />
