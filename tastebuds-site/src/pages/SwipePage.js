@@ -120,11 +120,6 @@ const SwipePage = () => {
     setIsExiting(true);
 
     setTimeout(() => {
-      fetch(`http://localhost:5001/user?email=${user.email}&selected_city=${selectedCity}`)
-            .then((response => response.json()))
-            .then((data) => {
-                setProfile(data);
-            });
 
       if (isLeft) {
         // Remove the current profile if swiped left (like)
