@@ -26,7 +26,7 @@ function ProfilePage()  {
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
   const [cuisine, setCuisine] = useState([]);
-  const [availableTags, setAvailableTags] = useState(["Italian", "Indian", "Japanese", "American", "Other"]);
+  const [availableTags, setAvailableTags] = useState([]);
   const [photo, setPhoto] = useState(null);
   const [icon, setIcon] = useState('🍉')
   const [bio, setBio] = useState('Insert bio here...')
@@ -46,6 +46,7 @@ const maxCharacters = 350;
 
   //populate profile by pulling data from API
   useEffect(() => {
+    const allTags = ["Italian", "Indian", "Japanese", "American", "Other"];
     // Fetch profile data
     const fetchProfile = async () => {
       try {
@@ -57,15 +58,19 @@ const maxCharacters = 350;
         }
 
         const data = await response.json();  // Parse the response as JSON
-        // setProfileData(data);  // Set the profile data
         setProfileData((prev) => ({
           ...data,
         }));
+        
+        const updatedAvailableTags = allTags.filter(
+          (tag) => !data.cuisine.includes(tag)
+        );
+        setAvailableTags(updatedAvailableTags);
 
       } catch (error) {
         console.error('Error fetching profile data:', error);
       }
-    };
+    }
     if (user) {
       fetchProfile();
     }
