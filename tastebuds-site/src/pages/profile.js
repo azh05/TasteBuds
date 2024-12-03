@@ -41,6 +41,7 @@ function ProfilePage()  {
     name: false,
     cuisine: false,
     bio: false,
+    icon: false,
 });
 const cuisineEditRef = useRef(null);
 const maxCharacters = 350;
@@ -211,6 +212,7 @@ const handleEditOrSave = () => {
 const handleSaveClick = ()=>{
   handleSaveAll();
   handleEditOrSave();
+  
 }
 
 const handleDeleteTag = (tag) => {
@@ -249,10 +251,10 @@ const handleDeleteTag = (tag) => {
                 <input type="file" id="photo-upload" accept="image/*" onChange={handlePhotoChange}/>
             </button>
         </div>
-        <div className = "food-icon" onClick={() => setShowPicker(!showPicker)}>
+        <div className = {`food-icon ${editingState.icon ? 'hover-enabled' : ''}`} onClick={() => setShowPicker(!showPicker)}>
             <span className="icon-display" >{profileData.icon}</span> 
         </div>
-        {showPicker && (
+        {showPicker && editingState.icon && (
             <div className="emoji-picker-container">
                 <Picker 
                     onEmojiClick={handleEmojiClick} 
