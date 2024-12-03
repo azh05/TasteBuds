@@ -259,7 +259,7 @@
 .watermelon {
   position: absolute;
   font-size: 4rem;
-  animation: fall 5s linear infinite;
+  animation: fall 4s linear infinite;
 }
 
 @keyframes fall {
