@@ -69,6 +69,7 @@ const SwipePage = () => {
     setCurrentIndex(0); // Reset to the first profile in the filtered list
   };
 
+  // Handle like or dislike
   const handleLike = async (isLeft) => {
     if (!user || currentIndex >= profiles.length) return;
 
@@ -97,6 +98,7 @@ const SwipePage = () => {
     }
   };
 
+  // Handle the swipe action (left for like, right for dislike)
   const handleClick = (isLeft) => {
     if (isExiting || currentIndex >= profiles.length) return; // Prevent swiping beyond the last profile
   
@@ -104,10 +106,10 @@ const SwipePage = () => {
     const direction = isLeft ? "left" : "right";
     setClickDirection(direction);
     setIsExiting(true);
-  
+
     setTimeout(() => {
       if (isLeft) {
-        // Remove the current profile if swiped left
+        // Remove the current profile if swiped left (like)
         setProfiles((prevProfiles) => {
           const newProfiles = prevProfiles.filter((_, index) => index !== currentIndex);
           if (currentIndex >= newProfiles.length) {
@@ -117,10 +119,11 @@ const SwipePage = () => {
           return newProfiles;
         });
       } else {
-        // Move to the next profile if swiped right
-        if (currentIndex + 1 < profiles.length) {
-          setCurrentIndex((prevIndex) => prevIndex + 1);
-        }
+        // Move to the next profile if swiped right (dislike)
+        setCurrentIndex((prevIndex) => {
+          // Check if we are at the last profile and need to loop back to the first one
+          return prevIndex + 1 >= profiles.length ? 0 : prevIndex + 1;
+        });
       }
       setIsExiting(false);
       setClickDirection("");
@@ -130,9 +133,9 @@ const SwipePage = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "ArrowLeft") {
-        handleClick(true); // Simulate left button click
+        handleClick(true); // Simulate left button click (like)
       } else if (event.key === "ArrowRight") {
-        handleClick(false); // Simulate right button click
+        handleClick(false); // Simulate right button click (dislike)
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -172,7 +175,7 @@ const SwipePage = () => {
           </select>
         </div>
 
-        {/* Display number of profiles for selected city */}
+        {/* Display number of profiles for the selected city */}
         <div className="available-profiles-count">
           <p>Available profiles: {availableProfilesCount}</p>
         </div>
