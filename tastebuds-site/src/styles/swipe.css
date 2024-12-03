@@ -160,3 +160,105 @@
     transform: translateX(-100%); 
     opacity: 0;
 } */
+/* Ensure the container has a column layout to stack elements */
+.swipe_page_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center all content */
+    padding: 20px;
+    width: 100%;
+    position: relative; /* Ensure stacking context for child elements */
+    z-index: 0; /* Ensure container is at the base layer */
+  }
+  
+  .city-dropdown {
+    position: absolute; /* Make the dropdown float above */
+    top: 20px; /* Distance from the top of the container */
+    z-index: 10; /* Ensure dropdown stays above the profile cards */
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Center the dropdown */
+    padding: 20px;
+  }
+  
+  /* Style the select box for better appearance */
+  .city-dropdown select {
+    padding: 8px;
+    font-size: 16px;
+    width: 180px; /* Set the width of the dropdown */
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+  }
+  
+  /* Swipe container - profiles below the dropdown */
+  .swipe-container {
+    display: flex;
+    flex-direction: column; /* Stack profiles vertically */
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    margin-top: 80px; /* Adjust to give space between the dropdown and profiles */
+    position: relative;
+  }
+  
+  /* Profile card specific styles */
+  .profile-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    width: 300px;
+    padding: 15px;
+    margin: 10px 0;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+  }
+  
+  .profile-card h3 {
+    margin: 10px 0;
+    font-size: 20px;
+    color: #333;
+  }
+  
+  .profile-card p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .available-profiles-count {
+    font-size: 16px;
+    font-weight: bold;
+    position: absolute; /* Make the dropdown float above */
+    top: 80px; /* Distance from the top of the container */
+    z-index: 10; /* Ensure dropdown stays above the profile cards */
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Center the dropdown */
+    padding: 20px;
+  }
+  
+
+.not-logged-in {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
+  
+  .not-logged-in div {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  

@@ -240,3 +240,17 @@
     height: 90%;
 }
 
+.not-logged-in {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+  }
+  
+  .not-logged-in div {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  

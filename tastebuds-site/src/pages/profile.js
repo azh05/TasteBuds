@@ -6,6 +6,9 @@ import { MdEdit } from "react-icons/md";
 import { IoAdd } from "react-icons/io5";
 import Watermelon from "../watermelon.jpg";
 import FoodTags from '../components/foodtags';
+import Navbar from '../components/navigationbar';
+import { useUser } from '../userinfo/UserContext';
+
 
 function ProfilePage()  {
     const [email, setEmail] = useState('');
@@ -31,6 +34,8 @@ function ProfilePage()  {
 });
 const cuisineEditRef = useRef(null);
 const maxCharacters = 350;
+const { user } = useUser();
+
 
 
   const handlePhotoChange = (event) => {
@@ -128,17 +133,21 @@ const handleDeleteTag = (tag) => {
     };
 }, []);
 
-
+if (!user) {
+  return (
+    <div>
+      <Navbar />
+      <div className="not-logged-in">
+        <div>Must be Logged In</div>
+      </div>
+    </div>
+  );
+}
 
 
   return (
     <div >
-        <div className = "top-bar" > 
-            <button className= "icon-button"> 
-                <FaBars size = {34}/>
-            </button>
-        </div>
-        <div className = "horizontal-bar"></div>
+        <Navbar></Navbar>
         <div className = "header-photo-container">
         <img id="header-photo" src={photo || Watermelon} alt="Header Photo" />
             <button 

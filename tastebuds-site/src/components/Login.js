@@ -23,7 +23,7 @@ function Login() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
       console.log('User logged in:', userCredential.user);
-      navigate('/');
+      navigate('/scroll');
     } catch (error) {
       // Handle authentication errors
       console.error('Error logging in:', error.message);
