@@ -11,14 +11,23 @@ import { useUser } from '../userinfo/UserContext';
 
 
 function ProfilePage()  {
-    const [email, setEmail] = useState('');
+  const { user } = useUser();
+  const [profileData, setProfileData] = useState({
+    profileName: '',
+    age: '',
+    gender: '',
+    cuisine: [],
+    bio: '',
+    icon: '',
+  });
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [profileName, setProfileName] = useState('Name');
   const [zipCode, setZipCode] = useState('');
-  const [age, setAge] = useState('20');
+  const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
-  const [cuisine, setCuisine] = useState(["Chinese", "Thai", "Mexican"]);
-  const [availableTags, setAvailableTags] = useState(["Italian", "Indian", "Japanese", "American", "Other"]);
+  const [cuisine, setCuisine] = useState([]);
+  const [availableTags, setAvailableTags] = useState([]);
   const [photo, setPhoto] = useState(null);
   const [icon, setIcon] = useState('🍉')
   const [bio, setBio] = useState('Insert bio here...')
@@ -27,6 +36,7 @@ function ProfilePage()  {
   const [canDelete, setCanDelete] = useState(true);
   const [canAddTag, setCanAddTag] = useState(false)
   const [originalProfileName, setOriginalProfileName] = useState('');
+  const [editOrSave, setEditOrSave] = useState ("Edit")
   const [editingState, setEditingState] = useState({
     name: false,
     cuisine: false,
@@ -34,104 +44,53 @@ function ProfilePage()  {
 });
 const cuisineEditRef = useRef(null);
 const maxCharacters = 350;
-const { user } = useUser();
 
 
-
-  const handlePhotoChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setPhoto(URL.createObjectURL(file));
-    }
-  };
-  const handleEmojiClick = (emojiObject) => {
-    setIcon(emojiObject.emoji);
-    setShowPicker(false); // Close the picker after selecting an emoji
-  };
-
-  const toggleEditing = (section) => {
-    setEditingState(prevState => ({
-        ...prevState,
-        [section]: !prevState[section],
-    }));
-};
-
-  const handleEdit = () => {
-    setOriginalProfileName(profileName);
-    setIsEditing(true);
-  };
-
-  const handleSave = (section) => {
-    toggleEditing(section);
-  };
-
-  const handleProfileNameChange = (event) => {
-    setProfileName(event.target.value); // Update the profile name
-};
-
- const handleCuisineChange = (tag) => {
-    setCuisine((prevCuisine) => [...prevCuisine, tag]); // Add the tag to the cuisine list
-    setAvailableTags((prevAvailableTags) => prevAvailableTags.filter((t) => t !== tag)); // Remove it from available tags
-    setCanAddTag(false); // Hide the available tags list
-  };
-
-  const handleBioChange = (event) => {
-    setBio (event.target.value);
-  }
-
-
-  const handleAddButton = () =>{
-    setCanAddTag(true);
-  };
-
-
-
-const handleKeyDown = (event,section) => {
-  if (event.key === 'Enter') {
-      handleSave(section); // Trigger save when Enter is pressed
-  } else if (event.key === 'Escape' && section == 'name') {
-      setProfileName(originalProfileName); // Revert to the original value when Escape is pressed
-      setIsEditing(false); // Exit editing mode
-  } else if ( event.key == 'Escape' && section == 'bio'){
-      setIsEditing(false);
-  }
-};
-
-
-const handleDeleteTag = (tag) => {
-  if (cuisine.length > 1){
-    setCuisine(cuisine.filter((t) => t !== tag)); // Remove the tag
-    setAvailableTags([...availableTags, tag]); // re-add to avilible tags
-  }
-  else {
-    setCanDelete(false);
-    setTimeout(() => setCanDelete(true), 2000);
-  }
-};
-
-  
-
-  const categories = [
-    {
-        category: 'food_drink',
-        name: 'Food & Drink' // Custom label
-    }
-  ];
-
-
+  //populate profile by pulling data from API
   useEffect(() => {
-    const handleClickOutside = (event) => {
-        if (cuisineEditRef.current && !cuisineEditRef.current.contains(event.target)) {
-            setEditingState((prev) => ({ ...prev, cuisine: false })); // Exit edit mode
-            setCanAddTag(false); // Hide the available tags list
+    const allTags = ["Italian", "Indian", "Japanese", "American", "Other"];
+    // Fetch profile data
+    const fetchProfile = async () => {
+      try {
+        const email = user.email;
+        const response = await fetch(`http://localhost:5001/profile?email=${email}`);
+        console.log("fetched user from backend API")
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile');
         }
-    };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-    };
-}, []);
+        const data = await response.json();  // Parse the response as JSON
+        setProfileData((prev) => ({
+          ...data,
+        }));
+        
+        const updatedAvailableTags = allTags.filter(
+          (tag) => !data.cuisine.includes(tag)
+        );
+        setAvailableTags(updatedAvailableTags);
+
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    }
+    if (user) {
+      fetchProfile();
+    }
+/*
+  const handleClickOutside = (event) => {
+      if (cuisineEditRef.current && !cuisineEditRef.current.contains(event.target)) {
+          setEditingState((prev) => ({ ...prev, cuisine: false })); // Exit edit mode
+          setCanAddTag(false); // Hide the available tags list
+      }
+  };
+*/
+/*
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+  };
+*/
+}, [user]);
 
 if (!user) {
   return (
@@ -143,6 +102,139 @@ if (!user) {
     </div>
   );
 }
+
+const handleSave = async (section) => {
+  try {
+    console.log(section, "saved");
+    const response = await fetch('http://localhost:5001/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // body: JSON.stringify(profileData), // Send the profileData as JSON in the body
+      body: JSON.stringify({
+        ...profileData
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save profile data');
+    }
+
+    toggleEditing(section); // Close editing mode
+  } catch (error) {
+    console.error('Error saving profile data:', error);
+  }
+};
+
+const handleInputChange = (field, value) => {
+  setProfileData(prev => ({ ...prev, [field]: value }));
+};
+
+
+  const handlePhotoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setPhoto(URL.createObjectURL(file));
+    }
+  };
+  
+  const handleEmojiClick = (emojiObject) => {
+    setIcon(emojiObject.emoji);
+    handleInputChange('icon', emojiObject.emoji);
+    setShowPicker(false); // Close the picker after selecting an emoji
+  };
+
+  const toggleEditing = (section) => {
+    setEditingState(prevState => ({
+        ...prevState,
+        [section]: !prevState[section],
+    }));
+  };
+
+  const handleEdit = () => {
+    setOriginalProfileName(profileName);
+    setIsEditing(true);
+  };
+
+  const handleProfileNameChange = (event) => {
+    handleInputChange('profileName', event.target.value);    // Update the profile name
+};
+
+ const handleCuisineChange = (tag) => {
+     // Add the tag to the cuisine list
+     setProfileData((prevData) => {
+      const updatedCuisine = [...prevData.cuisine, tag]; // Update cuisine based on profileData
+      return {
+        ...prevData,
+        cuisine: updatedCuisine, // Update the cuisine array in profileData
+      };
+    });
+    setAvailableTags((prevAvailableTags) => prevAvailableTags.filter((t) => t !== tag)); // Remove it from available tags
+    setCanAddTag(false); // Hide the available tags list
+  };
+
+  const handleBioChange = (event) => {
+    handleInputChange('bio', event.target.value);
+  }
+
+  const handleAddButton = () =>{
+    setCanAddTag(true);
+  };
+
+
+/*
+const handleKeyDown = (event,section) => {
+  if (event.key === 'Enter') {
+      handleSave(section); // Trigger save when Enter is pressed
+  } else if (event.key === 'Escape' && section == 'name') {
+      setProfileName(originalProfileName); // Revert to the original value when Escape is pressed
+      setIsEditing(false); // Exit editing mode
+  } else if ( event.key == 'Escape' && section == 'bio'){
+      setIsEditing(false);
+  }
+};
+*/
+const handleSaveAll = () => {
+  // Call handleSave for each section
+  handleSave('icon');
+  handleSave('name');
+  handleSave('cuisine');
+  handleSave('bio');
+  // Optionally add more sections if needed
+};
+
+const handleEditOrSave = () => {
+  setEditOrSave((prevText) => (prevText === "Edit" ? "Save All" : "Edit"));
+};
+
+const handleSaveClick = ()=>{
+  handleSaveAll();
+  handleEditOrSave();
+}
+
+const handleDeleteTag = (tag) => {
+  if (profileData.cuisine.length > 1) {
+    console.log("delete tag");
+    // Update cuisine within profileData
+    setProfileData((prevData) => ({
+      ...prevData,
+      cuisine: prevData.cuisine.filter((t) => t !== tag), // Remove the tag
+    }));
+
+    setAvailableTags((prevAvailableTags) => [...prevAvailableTags, tag]); // re-add to available tags
+  } else {
+    setCanDelete(false);
+    setTimeout(() => setCanDelete(true), 2000);
+  }
+};
+
+  const categories = [
+    {
+        category: 'food_drink',
+        name: 'Food & Drink' // Custom label
+    }
+  ];
 
 
   return (
@@ -158,7 +250,7 @@ if (!user) {
             </button>
         </div>
         <div className = "food-icon" onClick={() => setShowPicker(!showPicker)}>
-            <span className="icon-display" >{icon}</span> 
+            <span className="icon-display" >{profileData.icon}</span> 
         </div>
         {showPicker && (
             <div className="emoji-picker-container">
@@ -174,42 +266,21 @@ if (!user) {
           <input
             className="name-input"
             type="text"
-            value ={profileName}
+            value ={profileData.profileName}
             onChange={handleProfileNameChange}
-            onKeyDown={(e) => handleKeyDown(e,'name')}
+            //onKeyDown={(e) => handleKeyDown(e,'name')}
           />
         ) : (
-          <p className = "name" >{profileName},</p>
+          <p className = "name" >{profileData.profileName},</p>
         )}
-        <p className = "name"> {age}</p>
-        <div className = "edit-button-container">
-        {!editingState.name && (
-         <button 
-            className = "edit-button"
-            onClick={() => toggleEditing('name')}> 
-            <MdEdit size = {20}/>
-          </button>
-        )}
-        </div>
+        <p className = "name"> {profileData.age}</p>
       </div>
       <div ref = {cuisineEditRef} className = "food-tags-display"> 
         <FoodTags 
-        foodList ={cuisine} 
+        foodList ={profileData.cuisine} 
         isEditing={editingState.cuisine}
         onDeleteTag={handleDeleteTag}
         />
-        <div className = "edit-button-container-2">
-          <div className = "edit-button-container">
-            {!editingState.cuisine &&(
-            <button
-              className = "edit-button"
-              onClick={() => toggleEditing('cuisine')}>
-              <MdEdit size = {20}/>
-            </button>
-            )}
-            
-          </div>
-        </div>
         {editingState.cuisine &&(
            <button
            className = "add-button"
@@ -239,25 +310,26 @@ if (!user) {
             className="bio-input"
             type= "text"
             placeholder="Insert bio here...."
-            value={bio}
+            value={profileData.bio}
             onChange={handleBioChange}
-            onKeyDown={(e) => handleKeyDown (e, 'bio')}
+            //onKeyDown={(e) => handleKeyDown (e, 'bio')}
             maxLength={maxCharacters}
           />
         ) : (
-          <p className= "bio-text">{bio}</p>
+          <p className= "bio-text">{profileData.bio}</p>
         )}
         </div>
         
-        <div className = "edit-bio-container">
-          <div className = "edit-button-container">
-            <button className = "edit-button"
-            onClick={() => toggleEditing('bio')}> 
-              <MdEdit size = {20}/>
-            </button>
-          </div>
-        </div>
+        
       </div>
+
+       {/* Save All Button */}
+    <div className="save-all-button-container">
+      <button className="save-all-button" onClick={handleSaveClick}>
+        {editOrSave}
+      </button>
+    </div>
+
 
     </div>
   );

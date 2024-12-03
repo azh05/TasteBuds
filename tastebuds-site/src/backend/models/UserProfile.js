@@ -7,8 +7,10 @@ const userProfileSchema = new mongoose.Schema({
   zipCode: String,
   age: Number,
   gender: String,
-  cuisine: String,
+  cuisine: { type: [String], default: [] },
   photo: String, // Assuming photo will be a URL or path
+  bio: {type: String, default: ''},
+  icon: {type: String, default: '🍉'},
   past_likes: { type: [String], default: [] },
   past_dislikes: { type: [String], default: [] },
   who_liked: { type: [String], default: []}
