@@ -240,3 +240,24 @@
     height: 90%;
 }
 
+.save-all-button-container{
+    padding-top: 10px;
+}
+
+.save-all-button{
+    position: relative;
+    margin-left: 7%;
+    background-color: #007bff;
+    height: 40px;
+    width: 110px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: white;
+    font-size: 15px;
+    border: none;
+    border-radius: 4%;
+    cursor: pointer;
+}
+
+.save-all-button-container :hover{
+    background-color:#003f83;
+}

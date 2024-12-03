@@ -35,6 +35,7 @@ function ProfilePage()  {
   const [canDelete, setCanDelete] = useState(true);
   const [canAddTag, setCanAddTag] = useState(false)
   const [originalProfileName, setOriginalProfileName] = useState('');
+  const [editOrSave, setEditOrSave] = useState ("Edit")
   const [editingState, setEditingState] = useState({
     name: false,
     cuisine: false,
@@ -69,19 +70,20 @@ const maxCharacters = 350;
     if (user) {
       fetchProfile();
     }
-
+/*
   const handleClickOutside = (event) => {
       if (cuisineEditRef.current && !cuisineEditRef.current.contains(event.target)) {
           setEditingState((prev) => ({ ...prev, cuisine: false })); // Exit edit mode
           setCanAddTag(false); // Hide the available tags list
       }
   };
-
+*/
+/*
   document.addEventListener('mousedown', handleClickOutside);
   return () => {
       document.removeEventListener('mousedown', handleClickOutside);
   };
-
+*/
 }, [user]);
 
 const handleSave = async (section) => {
@@ -165,7 +167,7 @@ const handleInputChange = (field, value) => {
   };
 
 
-
+/*
 const handleKeyDown = (event,section) => {
   if (event.key === 'Enter') {
       handleSave(section); // Trigger save when Enter is pressed
@@ -176,7 +178,7 @@ const handleKeyDown = (event,section) => {
       setIsEditing(false);
   }
 };
-
+*/
 const handleSaveAll = () => {
   // Call handleSave for each section
   handleSave('icon');
@@ -185,6 +187,16 @@ const handleSaveAll = () => {
   handleSave('bio');
   // Optionally add more sections if needed
 };
+
+const handleEditOrSave = () => {
+  setEditOrSave((prevText) => (prevText === "Edit" ? "Save All" : "Edit"));
+};
+
+const handleSaveClick = ()=>{
+  handleSaveAll();
+  handleEditOrSave();
+}
+
 
 
 // const handleDeleteTag = (tag) => {
@@ -200,6 +212,8 @@ const handleSaveAll = () => {
 //     setTimeout(() => setCanDelete(true), 2000);
 //   }
 // };
+
+
 
 const handleDeleteTag = (tag) => {
   if (profileData.cuisine.length > 1) {
@@ -261,21 +275,12 @@ const handleDeleteTag = (tag) => {
             type="text"
             value ={profileData.profileName}
             onChange={handleProfileNameChange}
-            onKeyDown={(e) => handleKeyDown(e,'name')}
+            //onKeyDown={(e) => handleKeyDown(e,'name')}
           />
         ) : (
           <p className = "name" >{profileData.profileName},</p>
         )}
         <p className = "name"> {profileData.age}</p>
-        <div className = "edit-button-container">
-        {!editingState.name && (
-         <button 
-            className = "edit-button"
-            onClick={() => toggleEditing('name')}> 
-            <MdEdit size = {20}/>
-          </button>
-        )}
-        </div>
       </div>
       <div ref = {cuisineEditRef} className = "food-tags-display"> 
         <FoodTags 
@@ -283,18 +288,6 @@ const handleDeleteTag = (tag) => {
         isEditing={editingState.cuisine}
         onDeleteTag={handleDeleteTag}
         />
-        <div className = "edit-button-container-2">
-          <div className = "edit-button-container">
-            {!editingState.cuisine &&(
-            <button
-              className = "edit-button"
-              onClick={() => toggleEditing('cuisine')}>
-              <MdEdit size = {20}/>
-            </button>
-            )}
-            
-          </div>
-        </div>
         {editingState.cuisine &&(
            <button
            className = "add-button"
@@ -326,7 +319,7 @@ const handleDeleteTag = (tag) => {
             placeholder="Insert bio here...."
             value={profileData.bio}
             onChange={handleBioChange}
-            onKeyDown={(e) => handleKeyDown (e, 'bio')}
+            //onKeyDown={(e) => handleKeyDown (e, 'bio')}
             maxLength={maxCharacters}
           />
         ) : (
@@ -334,20 +327,13 @@ const handleDeleteTag = (tag) => {
         )}
         </div>
         
-        <div className = "edit-bio-container">
-          <div className = "edit-button-container">
-            <button className = "edit-button"
-            onClick={() => toggleEditing('bio')}> 
-              <MdEdit size = {20}/>
-            </button>
-          </div>
-        </div>
+        
       </div>
 
        {/* Save All Button */}
     <div className="save-all-button-container">
-      <button className="save-all-button" onClick={handleSaveAll}>
-        Save All
+      <button className="save-all-button" onClick={handleSaveClick}>
+        {editOrSave}
       </button>
     </div>
 
