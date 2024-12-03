@@ -1,80 +1,168 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import "../styles/swipe.css";
+import SwipeProfile from "../components/SwipeProfile"; // Assuming this component handles the profile UI
+import { useUser } from "../userinfo/UserContext"; // To get the current user information
+import zipcodes from "zipcodes"; // Using the zipcodes package for city lookup
+import Navbar from '../components/navigationbar';
 
-import "../styles/swipe.css"
-import SwipeProfile from '../components/SwipeProfile';
+const SwipePage = () => {
+  const { user } = useUser(); // Current user info
+  const [profiles, setProfiles] = useState([]); // Profiles displayed in the swipe view
+  const [allProfiles, setAllProfiles] = useState([]); // All profiles fetched from the backend
+  const [cities, setCities] = useState([]); // Unique cities for the dropdown
+  const [selectedCity, setSelectedCity] = useState("All"); // Dropdown selection
+  const [isExiting, setIsExiting] = useState(false); // For exit animation
+  const [clickDirection, setClickDirection] = useState(""); // Direction of swipe (left or right)
+  const [currentIndex, setCurrentIndex] = useState(0); // For tracking the current profile index
 
-const endpoint = "http://localhost:5001/users"
+  // Fetch all user profiles when the component mounts
+  useEffect(() => {
+    fetch("http://localhost:5001/all_users") // Ensure this matches your backend URL
+      .then((response) => response.json())
+      .then((users) => {
+        setAllProfiles(users); // Store all profiles
+        setProfiles(users); // Display all profiles initially
 
+        // Extract unique cities for the dropdown (including "All")
+        const uniqueCities = ["All", ...new Set(users.map((user) => getCityFromZip(user.zipCode)))];
+        setCities(uniqueCities);
+      })
+      .catch((error) => {
+        console.error("Error fetching profiles:", error);
+      });
+  }, []);
 
-function SwipePage() {
-    const [profiles, setProfiles] = useState([ 
-        { name: "Peter", age: 24, foodList: ["Italian", "Wine"] }, 
-        { name: "Sharon", age: 37, foodList: ["Mexican"] }, 
-        { name: "Min", age: 12, foodList: ["Food"] },
-        { name: "Gao", age: 44, foodList: ["Beverage"] },
-        { name: "David", age: 89, foodList: ["Orange"]},
-        { name: "Orange", age: 11, foodList: ["Ham", "Burger"] }
-    ]); 
+  // Function to get city from zip code using the zipcodes library
+  const getCityFromZip = (zipCode) => {
+    const location = zipcodes.lookup(zipCode);
+    return location ? location.city : "No city provided";
+  };
 
-    const [index, setIndex] = useState(0);
-    const [isExiting, setIsExiting] = useState(false);
-    const [clickDirection, setClickDirection] = useState("");
+  // Handle city selection
+  const handleCityChange = (event) => {
+    const selected = event.target.value;
+    setSelectedCity(selected);
 
-    const handleClick = (isLeft) => {
-        if (isExiting) return;
-
-        const direction = isLeft ? "left" : "right";
-        setClickDirection(direction); 
-        setIsExiting(true); // Start the exit animation
-
-
-        setTimeout(() => {  
-            setIndex((prevIndex) => (prevIndex + 1) % profiles.length);
-            setIsExiting(false);
-            setClickDirection("");
-          }, 300); // Match this to animation duration
-
+    let filteredProfiles = [];
+    if (selected === "All") {
+      filteredProfiles = allProfiles;
+    } else {
+      filteredProfiles = allProfiles.filter(
+        (profile) => getCityFromZip(profile.zipCode) === selected
+      );
     }
 
-    useEffect(() => {
-        fetch(endpoint)
-            .then((response => response.json()))
-            .then((data) => {
-                // console.log(data);
-                setProfiles(data);
-            })
-    }, []);
+    setProfiles(filteredProfiles); // Update displayed profiles
+    setCurrentIndex(0); // Reset to the first profile in the filtered list
+  };
 
-    useEffect(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === "ArrowLeft") {
-                handleClick(true); // Simulate left button click
-            } else if (event.key === "ArrowRight") {
-                handleClick(false); // Simulate right button click
-            }
-        }
-        window.addEventListener("keydown", handleKeyDown);
+  const handleLike = async (isLeft) => {
+    if (!user || currentIndex >= profiles.length) return; // Prevent issues with invalid indexes
+    const display_user = profiles[currentIndex];
+    const display_email = display_user.email;
+    const user_email = user.email;
 
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-        }, [])
+    const response = await fetch("http://localhost:5001/past_likes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        display_email,
+        user_email,
+        isLeft,
+      }),
+    });
 
-    return ( 
-        
-        <div className="swipe_page_container">
-            { 
-            <SwipeProfile name={profiles[index].profileName} 
-                age={profiles[index].age} 
-                foodList={profiles[index].cuisine}
-                clickFunction={handleClick}
-                className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
-                />
+    if (!response.ok) {
+      console.error("Failed to update likes.");
+    }
+  };
 
-            }       
-                
+  const handleClick = (isLeft) => {
+    if (isExiting || currentIndex >= profiles.length) return; // Prevent swiping beyond the last profile
+
+    handleLike(isLeft);
+    const direction = isLeft ? "left" : "right";
+    setClickDirection(direction);
+    setIsExiting(true);
+
+    setTimeout(() => {
+      if (currentIndex + 1 < profiles.length) {
+        setCurrentIndex((prevIndex) => prevIndex + 1); // Move to the next profile
+      }
+      setIsExiting(false);
+      setClickDirection("");
+    }, 400); // Match this to animation duration
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowLeft") {
+        handleClick(true); // Simulate left button click
+      } else if (event.key === "ArrowRight") {
+        handleClick(false); // Simulate right button click
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [currentIndex, isExiting]);
+
+  // Get the number of profiles for the selected city
+  const availableProfilesCount = profiles.length;
+
+  if (!user) {
+    return (
+      <div>
+        <Navbar />
+        <div className="not-logged-in">
+          <div>Must be Logged In</div>
         </div>
+      </div>
     );
-}
+  }      
+
+  return (
+    <div>
+    <Navbar></Navbar>
+    <div className="swipe_page_container">
+      {/* Dropdown for filtering by city */}
+      <div className="city-dropdown">
+        <label htmlFor="cityFilter">Filter by City:</label>
+        <select id="cityFilter" value={selectedCity} onChange={handleCityChange}>
+          {cities.map((city, index) => (
+            <option key={`${city}-${index}`} value={city}>
+              {city}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Display number of profiles for selected city */}
+      <div className="available-profiles-count">
+        <p>Available profiles: {availableProfilesCount}</p>
+      </div>
+
+      {/* Swipe view for profiles */}
+      <div className="swipe-container">
+        {availableProfilesCount > 0 ? (
+          <SwipeProfile
+            name={profiles[currentIndex]?.profileName}
+            age={profiles[currentIndex]?.age}
+            foodList={profiles[currentIndex]?.cuisine}
+            clickFunction={handleClick}
+            className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
+          />
+        ) : (
+          <p>No profiles available for the selected city.</p>
+        )}
+      </div>
+    </div>
+    </div>
+  );
+};
 
 export default SwipePage;
