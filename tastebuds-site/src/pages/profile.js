@@ -10,8 +10,6 @@ import Navbar from '../components/navigationbar';
 import { useUser } from '../userinfo/UserContext';
 
 
-import { useUser } from '../userinfo/UserContext';
-
 function ProfilePage()  {
   const { user } = useUser();
   const [profileData, setProfileData] = useState({
