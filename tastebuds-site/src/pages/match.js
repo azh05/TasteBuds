@@ -10,7 +10,7 @@ import Navbar from '../components/navigationbar';
 function Match() {
 
     const { user } = useUser();
-    const [info, setInfo] = useState([{ name: "Min Gao", age: "35", food: "Italian" }]);
+    const [info, setInfo] = useState([{ name: "Min Gao", age: "35", food: "Italian", email:"mingao@cs.ucla.edu" }]);
 
     useEffect(() => {
         if (user) {
@@ -57,7 +57,7 @@ function Match() {
         <div className="horizontal-line" ></div>
         <div className = "match-container">
             {info.map((user) =>  (
-                <MatchedProfile name={user.profileName} age={user.age} food={user.cuisine} key={user.email}/>
+                <MatchedProfile name={user.profileName} age={user.age} food={user.cuisine} mail={user.email}/>
             ))}
             
         </div>
