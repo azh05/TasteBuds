@@ -1,4 +1,4 @@
-const genderChoices = ['preferNotToSay', 'male', 'female', 'non-binary'];
+const genderChoices = ['preferNotToSay', 'male', 'female', 'nonBinary'];
 const cuisineChoices = ['italian', 'mexican', 'japanese', 'indian', 'chinese', 'american', 'other']
 
 function hashCode(str) {
@@ -57,7 +57,7 @@ function embedUser(user) {
     const { age, gender, cuisine, past_likes, past_dislikes, who_liked, email } = user;
 
     const genderID = gender ? genderChoices.indexOf(gender.toLowerCase()) : 0;
-    const cuisineID = cuisine ? cuisineChoices.indexOf(cuisine.toLowerCase()) : 0;
+    const cuisineID = cuisine ? cuisineChoices.indexOf(cuisine[0].toLowerCase()) : 0;
     const past_likes_ID = past_likes ? past_likes.reduce((total, str) => total + hashCode(str) / 10000000000, 0) : 0;
     const past_dislikes_ID = past_dislikes ? past_dislikes.reduce((total, str) => total + hashCode(str) / 10000000000, 0) : 0;
     const who_liked_ID = who_liked ? who_liked.reduce((total, str) => total + hashCode(str) / 10000000000, 0) : 0;
