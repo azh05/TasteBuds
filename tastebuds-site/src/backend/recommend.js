@@ -85,7 +85,7 @@ function recommendUser(userList, userEmail) {
     if(!currentUser) {
         // Add to the database and return someone random
         console.log("Current User DNE");
-        return null;
+        return { availableCount: 0, recUserEmail: userList[most_sim_idx].email};
     }
     
     // Getting emails of users that were recently seen
@@ -96,10 +96,11 @@ function recommendUser(userList, userEmail) {
         return candidate.email && candidate.email !== userEmail && !(recent_interactions.includes(candidate.email));
     }); 
 
+
     // No Candidates
     if(userList.length == 0) {
         console.log("No Candidates available")
-        return null; 
+        return { availableCount: 0, recUserEmail: null};
     }
 
     // Calculating Cosine Similarity between their embed_vectors 
@@ -113,10 +114,10 @@ function recommendUser(userList, userEmail) {
 
     if(most_sim_idx == -1) {
         console.log("Cosine Sim Error");
-        return null;
+        return { availableCount: userList.length, recUserEmail: null};
     }
 
-    return userList[most_sim_idx].email;
+    return { availableCount: userList.length, recUserEmail: userList[most_sim_idx].email};
 }
 
 

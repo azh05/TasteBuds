@@ -88,7 +88,7 @@ app.get('/user', async (req, res) => {
     }
       
     // recommended user email
-    const recUserEmail = recommendUser(userEmbeds, email);
+    const { availableCount , recUserEmail } = recommendUser(userEmbeds, email);
 
     // User who is logged in
     const currUser = await UserRec.findOne({email: email});
@@ -99,7 +99,7 @@ app.get('/user', async (req, res) => {
     // if null email -> None avaiable 
     
     if(!recUserEmail) { 
-      res.status(200).json(null); 
+      res.status(200).json({ recUser: null, availableCount: availableCount } ); 
       /* 
       // Pick a random email 
       const currUserInteractions = currUser ?  currUser.recent_interactions : [];
@@ -142,7 +142,7 @@ app.get('/user', async (req, res) => {
         { new: true, upsert: true }
       );
 
-      res.status(200).json(recUser); 
+      res.status(200).json({ recUser: recUser, availableCount, availableCount }); 
     }
 
     
