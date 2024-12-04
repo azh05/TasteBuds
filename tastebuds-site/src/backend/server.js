@@ -5,17 +5,29 @@ require('dotenv').config(); // To use environment variables from a .env file
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const { embedUser, recommendUser, pickRandomUser } = require('./recommend');
 
+// Recommendation and Zipcode Filtering system
+const { embedUser, recommendUser, pickRandomUser } = require('./recommend');
+const zipcodes = require("zipcodes");
+
+// Mongoose object types
 const UserProfile = require('./models/UserProfile');
 const UserRec = require('./models/UserRec');
 
 const app = express();
-const PORT = process.env.PORT || 5001; //backend runs on port 5001
 
 // Middleware
+// Use CORS middleware and specify which origins are allowed
+const corsOptions = {
+  origin: 'http://localhost:3000', // Allow only this origin
+  methods: 'GET, POST, PUT, DELETE', // Allow these HTTP methods
+  allowedHeaders: 'Content-Type', // Allow only this header
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(cors());
+const PORT = process.env.PORT || 5001; //backend runs on port 5001
+
 
 // Connect to MongoDB
 console.log('MONGO_URI:', process.env.MONGO_URI); // Add this before connecting to MongoDB
@@ -28,6 +40,11 @@ mongoose.connect(process.env.MONGO_URI, {
 }).catch((error) => {
   console.error('Error connecting to MongoDB:', error);
 });
+
+const getCityFromZip = (zipCode) => {
+  const location = zipcodes.lookup(zipCode);
+  return location ? location.city : "No city provided";
+};
 
 // Sample route
 app.get('/', (req, res) => {
@@ -48,11 +65,29 @@ app.get('/all_users', async (req, res) => {
 
 app.get('/user', async (req, res) => {
   try {
-    const { email } = req.query;
+    const { email, selected_city } = req.query;
 
     // Query all documents from the userprofiles collection
-    const userEmbeds = await UserRec.find({});
+    const userProfiles = await UserProfile.find({});
 
+    let userEmbeds;
+    if(selected_city && selected_city !== "All") {
+      // Filtering profiles by zipcode
+      const filteredUserProfiles = userProfiles.filter(
+        (profile) => getCityFromZip(profile.zipCode) === selected_city
+      );
+      const filteredEmails = filteredUserProfiles.map(user => user.email);
+
+      // Query all documents from the userrecs collection by zipcode
+      userEmbeds = await UserRec.find({ $or: [
+        { email: { $in: filteredEmails } },
+        { email: email }
+      ] });
+    } else {
+      userEmbeds = await UserRec.find({});
+    }
+      
+    // recommended user email
     const recUserEmail = recommendUser(userEmbeds, email);
 
     // User who is logged in
@@ -61,11 +96,12 @@ app.get('/user', async (req, res) => {
     // how long it will take for a seen user to be valid agains
     const DELAY = 10;
 
-    // if null email
-    // Pick a random email 
+    // if null email -> None avaiable 
+    
     if(!recUserEmail) { 
-      const userProfiles = await UserProfile.find({});
-
+      res.status(200).json(null); 
+      /* 
+      // Pick a random email 
       const currUserInteractions = currUser ?  currUser.recent_interactions : [];
 
       const randomEmail = pickRandomUser(userProfiles, email, currUserInteractions);
@@ -87,11 +123,10 @@ app.get('/user', async (req, res) => {
         );
       }
 
-      res.status(200).json(randomUser);
+      res.status(200).json(randomUser); */
     } else {
       const recUser = await UserProfile.findOne({email: recUserEmail});
-     
-      if(currUser && currUser.recent_interactions && currUser.recent_interactions.length > DELAY) {
+      if(currUser && currUser.recent_interactions && currUser.recent_interactions.length >= DELAY) {
         // Update the recommendation collection 
         await UserRec.updateOne(
           { email: email },
@@ -101,7 +136,7 @@ app.get('/user', async (req, res) => {
       }
       
 
-      const updatedDisplayUser = await UserRec.findOneAndUpdate(
+      const updatedUser = await UserRec.findOneAndUpdate(
         { email: email },
         { $addToSet: { recent_interactions: recUserEmail }, $set: {email: email}},
         { new: true, upsert: true }
@@ -146,6 +181,46 @@ app.post('/api/signup', async (req, res) => {
     res.status(500).json({ error: 'Failed to create profile' });
   }
 });
+
+
+//get user profile
+app.get('/profile', async (req, res) => {
+  try {
+    // Query one document from userprofiles
+    const { email } = req.query;
+    const user = await UserProfile.findOne({email: email});
+    res.status(200).json(user); 
+  } catch (error) {
+    console.error('Error getting profile:', error);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+});
+
+// update user profile
+app.put('/profile', async (req, res) => {
+  const { email, profileName, bio, icon, cuisine } = req.body;
+
+  try {
+    // Find the user and update the fields using database query logic
+    const updatedUser = await UserProfile.findOneAndUpdate({ email: email },
+      { 
+        $set: { profileName, bio, icon, cuisine },
+        //  $addToSet: { cuisine: { $each: cuisine } } // Add cuisines without duplicating
+      },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Profile updated successfully', updatedUser });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
 
 // updating the users past_likes and past_dislikes page
 app.post('/past_likes', async (req, res) => {
@@ -193,12 +268,14 @@ app.post('/past_likes', async (req, res) => {
     // Update Embedding
     const updatedUserEmbed = await UserRec.findOneAndUpdate(
       { email: user_email }, 
-      { $set: { embed_vector: embedUser(updatedUser) }}
+      { $set: { embed_vector: embedUser(updatedUser) }},
+      { upsert: true, returnDocument: 'after' }
     )
 
     const updatedDisplayEmbed = await UserRec.findOneAndUpdate(
       { email: display_email }, 
-      { $set: { embed_vector: embedUser(updatedDisplayUser) }}
+      { $set: { embed_vector: embedUser(updatedDisplayUser) }},
+      { upsert: true, returnDocument: 'after' }
     )
 
     res.status(200).json({ message: 'Profiles updated successfully', updatedUser });
@@ -207,6 +284,7 @@ app.post('/past_likes', async (req, res) => {
     res.status(500).json({ error: 'Failed to update likes' });
   }
 });
+
 
 app.get('/likes', async(req, res) => {
   try {
@@ -221,3 +299,4 @@ app.get('/likes', async(req, res) => {
     res.status(500).json({ error: 'Failed to fetch users'})
   }
 })
+

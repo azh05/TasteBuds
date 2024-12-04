@@ -160,6 +160,7 @@
     transform: translateX(-100%); 
     opacity: 0;
 } */
+
 /* Ensure the container has a column layout to stack elements */
 .swipe_page_container {
     display: flex;
@@ -234,7 +235,7 @@
     font-size: 14px;
     color: #666;
   }
-
+  
   .available-profiles-count {
     font-size: 16px;
     font-weight: bold;

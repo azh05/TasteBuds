@@ -57,7 +57,16 @@ function Match() {
         <div className="horizontal-line" ></div>
         <div className = "match-container">
             {info.map((user) =>  (
+<<<<<<< HEAD
                 <MatchedProfile name={user.profileName} age={user.age} food={user.cuisine} mail={user.email}/>
+=======
+                <div key={user.email} className="match-item">
+                    <Link to={`/profile/${user.email}`} 
+                        className="match-name-link" style={{ textDecoration: 'none' }}>
+                    <MatchedProfile name={user.profileName} age={user.age} food={user.cuisine} />
+                    </Link>
+            </div>
+>>>>>>> view-profiles
             ))}
             
         </div>
