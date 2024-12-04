@@ -242,12 +242,6 @@ const handleDeleteTag = (tag) => {
         <Navbar></Navbar>
         <div className = "header-photo-container">
         <img id="header-photo" src={photo || Watermelon} alt="Header Photo" />
-            <button 
-             className="upload-button" 
-             onClick={() => document.getElementById('photo-upload').click()}>
-                Change Photo
-                <input type="file" id="photo-upload" accept="image/*" onChange={handlePhotoChange}/>
-            </button>
         </div>
         <div className = "food-icon" onClick={() => setShowPicker(!showPicker)}>
             <span className="icon-display" >{profileData.icon}</span> 
