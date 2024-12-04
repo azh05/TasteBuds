@@ -98,6 +98,13 @@ const maxCharacters = 350;
 */
 }, [user]);
 
+useEffect(() => {
+  if (profileData.cuisine && profileData.cuisine.length > 0) {
+    pickPhoto();
+  }
+}, [profileData.cuisine]);
+
+
 if (!user) {
   return (
     <div>
