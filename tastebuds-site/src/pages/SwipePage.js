@@ -30,6 +30,7 @@ const SwipePage = () => {
       })
       .then((users) => {
         if (Array.isArray(users)) {
+          users = users.filter(user => user.email !== user); //exclude yourself from swipe page
           setAllProfiles(users); // Store all profiles
           setProfiles(users); // Display all profiles initially
 
