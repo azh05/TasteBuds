@@ -48,7 +48,7 @@ const maxCharacters = 350;
 
   //populate profile by pulling data from API
   useEffect(() => {
-    const allTags = ["Italian", "Indian", "Japanese", "American", "Other"];
+    const allTags = ["Italian", "Indian", "Japanese", "American", "Other", "Mexican", "Chinese"];
     // Fetch profile data
     const fetchProfile = async () => {
       try {
