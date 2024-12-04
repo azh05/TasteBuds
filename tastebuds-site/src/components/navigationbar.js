@@ -21,15 +21,19 @@ function Navbar () {
   </div>
   <div className="navbar-center">
     <ul className="nav-links">
-      <li>
-      <a href={`/profile/${user.email}`}>Edit my profile</a>
-      </li>
-      <li>
-        <a href="/match">View my matches</a>
-      </li>
-      <li>
-        <a href="/scroll">Swipe on Profiles</a>
-      </li>
+      {user && (
+              <>
+                <li>
+                  <a href={`/profile/${user.email}`}>Edit my profile</a>
+                </li>
+                <li>
+                  <a href="/match">View my matches</a>
+                </li>
+                <li>
+                  <a href="/scroll">Swipe on Profiles</a>
+                </li>
+              </>
+       )}
       <div onClick={handleLogout}> 
         <li>
             <a href="/">Logout</a>
