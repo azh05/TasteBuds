@@ -253,7 +253,7 @@ const handleDeleteTag = (tag) => {
         <div className = "food-icon" onClick={() => setShowPicker(!showPicker)}>
             <span className="icon-display" >{profileData.icon}</span> 
         </div>
-        {showPicker && (
+        {showPicker && user.email == profileData.email &&(
             <div className="emoji-picker-container">
                 <Picker 
                     onEmojiClick={handleEmojiClick} 
