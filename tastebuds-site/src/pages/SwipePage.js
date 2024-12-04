@@ -1,164 +1,141 @@
 import React, { useState, useEffect } from "react";
 import "../styles/swipe.css";
-import SwipeProfile from "../components/SwipeProfile"; // Assuming this component handles the profile UI
-import { useUser } from "../userinfo/UserContext"; // To get the current user information
-import zipcodes from "zipcodes"; // Using the zipcodes package for city lookup
+import SwipeProfile from "../components/SwipeProfile";
+import { useUser } from "../userinfo/UserContext";
+import zipcodes from "zipcodes";
 import Navbar from "../components/navigationbar";
 
 const SwipePage = () => {
-  const { user } = useUser(); // Current user info
-  const [profiles, setProfiles] = useState([]); // Profiles displayed in the swipe view
-  const [allProfiles, setAllProfiles] = useState([]); // All profiles fetched from the backend
-  const [cities, setCities] = useState([]); // Unique cities for the dropdown
-  const [selectedCity, setSelectedCity] = useState("All"); // Dropdown selection
-  const [isExiting, setIsExiting] = useState(false); // For exit animation
-  const [clickDirection, setClickDirection] = useState(""); // Direction of swipe (left or right)
-  const [currentIndex, setCurrentIndex] = useState(0); // For tracking the current profile index
-
-  const [profile, setProfile] = useState(
-    { profileName: "", age: "", foodList: []}
-); 
+  const { user } = useUser();
+  const [profiles, setProfiles] = useState([]);
+  const [allProfiles, setAllProfiles] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("All");
+  const [isExiting, setIsExiting] = useState(false);
+  const [clickDirection, setClickDirection] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Fetch all user profiles when the component mounts
-  useEffect(() => {
-    fetch("http://localhost:5001/all_users") // Ensure this matches your backend URL
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((users) => {
-        if (Array.isArray(users)) {
-          setAllProfiles(users); // Store all profiles
-          setProfiles(users); // Display all profiles initially
+useEffect(() => {
+  fetch("http://localhost:5001/all_users") // Ensure this matches your backend URL
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((users) => {
+      if (Array.isArray(users)) {
+        // Filter out the current user's profile
+        const filteredUsers = users.filter((profile) => profile.email !== user.email);
 
-          // Extract unique cities for the dropdown (including "All")
-          const uniqueCities = [
-            "All",
-            ...new Set(users.map((user) => getCityFromZip(user.zipCode))),
-          ];
-          setCities(uniqueCities);
-        } else {
-          console.error("Invalid data format:", users);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching profiles:", error);
-      });
-  }, []);
+        setAllProfiles(filteredUsers); // Store all other profiles
+        setProfiles(filteredUsers); // Display all other profiles initially
 
-  // Set first user
-    useEffect(() => {
-        fetch(`http://localhost:5001/user?email=${user.email}`)
-                .then((response => response.json()))
-                .then((data) => {
-                    setProfile(data);
-                })
-    }, []);
+        // Extract unique cities for the dropdown (including "All")
+        const uniqueCities = [
+          "All",
+          ...new Set(filteredUsers.map((user) => getCityFromZip(user.zipCode))),
+        ];
+        setCities(uniqueCities);
+      } else {
+        console.error("Invalid data format:", users);
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching profiles:", error);
+    });
+}, [user.email]);
 
-  // Function to get city from zip code using the zipcodes library
+
+  // Get city from zip code
   const getCityFromZip = (zipCode) => {
     if (!zipCode) return "No city provided";
     const location = zipcodes.lookup(zipCode);
     return location ? location.city : "No city provided";
   };
 
-  // Handle city selection
+  // Handle city filter changes
   const handleCityChange = (event) => {
     const selected = event.target.value;
     setSelectedCity(selected);
 
-    let filteredProfiles = [];
-    if (selected === "All") {
-      filteredProfiles = allProfiles;
-    } else {
-      filteredProfiles = allProfiles.filter(
-        (profile) => getCityFromZip(profile.zipCode) === selected
-      );
-    }
+    const filteredProfiles =
+      selected === "All"
+        ? allProfiles
+        : allProfiles.filter((profile) => getCityFromZip(profile.zipCode) === selected);
 
-    setProfiles(filteredProfiles); // Update displayed profiles
-    setCurrentIndex(0); // Reset to the first profile in the filtered list
+    setProfiles(filteredProfiles);
+    setCurrentIndex(0);
   };
 
   // Handle like or dislike
   const handleLike = async (isLeft) => {
-    if (!user || currentIndex >= profiles.length) return; // Prevent issues with invalid indexes
-    const display_user = profile;
-    const display_email = display_user.email;
-    const user_email = user.email;
+    if (!user || currentIndex >= profiles.length) return;
+
+    const currentProfile = profiles[currentIndex];
 
     try {
       const response = await fetch("http://localhost:5001/past_likes", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          display_email,
-          user_email,
+          display_email: currentProfile.email,
+          user_email: user.email,
           isLeft,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to update likes. Status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`Failed to update likes. Status: ${response.status}`);
     } catch (error) {
       console.error("Error in handleLike:", error);
     }
   };
 
-  // Handle the swipe action (left for like, right for dislike)
   const handleClick = (isLeft) => {
-    if (isExiting || currentIndex >= profiles.length) return; // Prevent swiping beyond the last profile
+    if (isExiting || profiles.length === 0) return;
   
     handleLike(isLeft);
-    const direction = isLeft ? "left" : "right";
-    setClickDirection(direction);
+    setClickDirection(isLeft ? "left" : "right");
     setIsExiting(true);
-
+  
     setTimeout(() => {
-
-      if (isLeft) {
-        // Remove the current profile if swiped left (like)
-        setProfiles((prevProfiles) => {
-          const newProfiles = prevProfiles.filter((_, index) => index !== currentIndex);
-          if (currentIndex >= newProfiles.length) {
-            // If the last profile was removed, reset currentIndex to the last profile
-            setCurrentIndex(newProfiles.length - 1);
-          }
-          return newProfiles;
-        });
-      } else {
-        // Move to the next profile if swiped right (dislike)
-        setCurrentIndex((prevIndex) => {
-          // Check if we are at the last profile and need to loop back to the first one
-          return prevIndex + 1 >= profiles.length ? 0 : prevIndex + 1;
-        });
-      }
+      setProfiles((prevProfiles) => {
+        const updatedProfiles = [...prevProfiles];
+  
+        if (isLeft) {
+          // Remove the current profile
+          updatedProfiles.splice(currentIndex, 1);
+        }
+  
+        // Adjust index after the profile is removed or moved
+        const newIndex =
+          isLeft
+            ? Math.min(currentIndex, updatedProfiles.length - 1) // Stay within bounds after removal
+            : (currentIndex + 1) % updatedProfiles.length; // Move to the next profile or loop
+  
+        setCurrentIndex(updatedProfiles.length > 0 ? newIndex : 0); // Reset index if no profiles left
+  
+        return updatedProfiles;
+      });
+  
       setIsExiting(false);
       setClickDirection("");
     }, 400); // Match this to animation duration
-  };
+  };  
+  
 
+  // Listen for arrow keys
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "ArrowLeft") {
-        handleClick(true); // Simulate left button click (like)
-      } else if (event.key === "ArrowRight") {
-        handleClick(false); // Simulate right button click (dislike)
-      }
+      if (event.key === "ArrowLeft") handleClick(true);
+      if (event.key === "ArrowRight") handleClick(false);
     };
     window.addEventListener("keydown", handleKeyDown);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentIndex, isExiting]);
 
-  // Get the number of profiles for the selected city
   const availableProfilesCount = profiles.length;
 
   if (!user) {
@@ -176,7 +153,6 @@ const SwipePage = () => {
     <div>
       <Navbar />
       <div className="swipe_page_container">
-        {/* Dropdown for filtering by city */}
         <div className="city-dropdown">
           <label htmlFor="cityFilter">Filter by City:</label>
           <select id="cityFilter" value={selectedCity} onChange={handleCityChange}>
@@ -188,20 +164,18 @@ const SwipePage = () => {
           </select>
         </div>
 
-        {/* Display number of profiles for the selected city */}
         <div className="available-profiles-count">
           <p>Available profiles: {availableProfilesCount}</p>
         </div>
 
-        {/* Swipe view for profiles */}
         <div className="swipe-container">
           {availableProfilesCount > 0 ? (
             <SwipeProfile
-              name={profiles[currentIndex]?.profileName || "Unknown"}
-              age={profiles[currentIndex]?.age || "N/A"}
-              foodList={profiles[currentIndex]?.cuisine || []}
-              clickFunction={handleClick}
-              className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
+            name={profiles[currentIndex]?.profileName || "Unknown"}
+            age={profiles[currentIndex]?.age || "N/A"}
+            foodList={profiles[currentIndex]?.cuisine || []}
+            clickFunction={handleClick}
+            className={`object ${isExiting ? `exit-${clickDirection}` : "enter"}`}
             />
           ) : (
             <p>No profiles available for the selected city.</p>
