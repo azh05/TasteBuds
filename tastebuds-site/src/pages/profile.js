@@ -5,6 +5,12 @@ import { FaBars } from 'react-icons/fa';
 import { MdEdit } from "react-icons/md";
 import { IoAdd } from "react-icons/io5";
 import Watermelon from "../watermelon.jpg";
+import American from "../american.jpg";
+import Chinese from "../chinese.jpg";
+import Indian from "../indian.jpg";
+import Italian from "../italian.jpg";
+import Japanese from "../japanese.jpg";
+import Mexican from "../mexican.jpg";
 import FoodTags from '../components/foodtags';
 import Navbar from '../components/navigationbar';
 import { useUser } from '../userinfo/UserContext';
@@ -211,6 +217,7 @@ const handleEditOrSave = () => {
 const handleSaveClick = ()=>{
   handleSaveAll();
   handleEditOrSave();
+  pickPhoto();
 }
 
 const handleDeleteTag = (tag) => {
@@ -236,6 +243,42 @@ const handleDeleteTag = (tag) => {
     }
   ];
 
+const pickPhoto = () =>{
+  var favFood = profileData.cuisine[0];
+  switch(favFood){
+      case "American":
+        setPhoto(American);
+        break;
+    
+      case "Chinese":
+        setPhoto(Chinese);
+        break;
+    
+      case "Indian":
+        setPhoto(Indian);
+        break;
+      
+      case "Italian":
+        setPhoto(Italian);
+        break;
+
+      case "Japanese":
+        setPhoto(Japanese);
+        break;
+      
+      case "Mexican":
+        setPhoto(Mexican);
+        break;
+      
+      case "Other":
+        setPhoto(Watermelon);
+        break;
+      
+      default:
+        setPhoto(Watermelon);
+        break;
+  };
+};
 
   return (
     <div >
