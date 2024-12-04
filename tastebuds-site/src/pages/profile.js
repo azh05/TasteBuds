@@ -8,9 +8,12 @@ import Watermelon from "../watermelon.jpg";
 import FoodTags from '../components/foodtags';
 import Navbar from '../components/navigationbar';
 import { useUser } from '../userinfo/UserContext';
+import { useParams } from 'react-router-dom'; 
+
 
 
 function ProfilePage()  {
+  const { email } = useParams(); // Get the email parameter from the URL
   const { user } = useUser();
   const [profileData, setProfileData] = useState({
     profileName: '',
@@ -20,7 +23,6 @@ function ProfilePage()  {
     bio: '',
     icon: '',
   });
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [profileName, setProfileName] = useState('Name');
   const [zipCode, setZipCode] = useState('');
@@ -52,7 +54,6 @@ const maxCharacters = 350;
     // Fetch profile data
     const fetchProfile = async () => {
       try {
-        const email = user.email;
         const response = await fetch(`http://localhost:5001/profile?email=${email}`);
         console.log("fetched user from backend API")
         if (!response.ok) {
@@ -325,9 +326,11 @@ const handleDeleteTag = (tag) => {
 
        {/* Save All Button */}
     <div className="save-all-button-container">
+      {user.email == profileData.email && (
       <button className="save-all-button" onClick={handleSaveClick}>
         {editOrSave}
       </button>
+      )}
     </div>
 
 
