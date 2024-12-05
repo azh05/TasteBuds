@@ -328,6 +328,9 @@ const pickPhoto = () =>{
         <p className='name'> Age {profileData.age}</p>
 
       </div>
+      <div className='email-container'>
+        <p className='email'>Contact Info: {profileData.email}</p>
+      </div>
       <div ref = {cuisineEditRef} className = "food-tags-display"> 
         <FoodTags 
         foodList ={profileData.cuisine} 

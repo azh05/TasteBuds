@@ -104,6 +104,17 @@
     
 }
 
+.email{
+    font-size: 25px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.email-container{
+    padding-left: 5%;
+    position: relative;
+    top: -35px;
+}
+
 .edit-button-container{
     padding-top: 20px;
     background-color: white;
