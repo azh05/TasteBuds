@@ -17,6 +17,9 @@ const SwipePage = () => {
 
   // Fetch all user profiles when the component mounts
 useEffect(() => {
+    if(!user) {
+        return;
+    }
   fetch("http://localhost:5001/all_users") // Ensure this matches your backend URL
     .then((response) => {
       if (!response.ok) {
@@ -45,7 +48,7 @@ useEffect(() => {
     .catch((error) => {
       console.error("Error fetching profiles:", error);
     });
-}, [user.email]);
+}, [user]);
 
 
   // Get city from zip code
