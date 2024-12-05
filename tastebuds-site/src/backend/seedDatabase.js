@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const UserProfile = require('./models/UserProfile');
 require('dotenv').config(); // Load environment variables
-const faker = require('faker'); // Install with `npm install faker`
 
 const MONGO_URI = "mongodb+srv://alexren:alexren@tastebuds.3cfkg.mongodb.net/?retryWrites=true&w=majority&appName=tastebuds";
 
@@ -18,56 +17,43 @@ async function seedDatabase() {
     await UserProfile.deleteMany({});
     console.log('Cleared existing profiles from database');
 
-    // Cuisine options
-    const cuisineOptions = [
-      'Italian',
-      'Mexican',
-      'Japanese',
-      'Indian',
-      'Chinese',
-      'American',
-      'Other',
+    // Sample profiles
+    const sampleProfiles = [
+      {
+        email: 'user1@example.com',
+        password: 'password1',
+        profileName: 'Alice',
+        zipCode: '90024',
+        age: 25,
+        gender: 'Female',
+        cuisine: 'Italian',
+        photo: 'https://example.com/photo1.jpg',
+      },
+      {
+        email: 'user2@example.com',
+        password: 'password2',
+        profileName: 'Bob',
+        zipCode: '90024',
+        age: 30,
+        gender: 'Male',
+        cuisine: 'Italian',
+        photo: 'https://example.com/photo2.jpg',
+      },
+      {
+        email: 'user3@example.com',
+        password: 'password3',
+        profileName: 'Carol',
+        zipCode: '90024',
+        age: 28,
+        gender: 'Female',
+        cuisine: 'Italian',
+        photo: 'https://example.com/photo3.jpg',
+      },
     ];
-
-    // Generate sample profiles
-    const sampleProfiles = [];
-
-    // California ZIP codes
-    const californiaZipCodes = ['90001', '90002', '90003', '94101', '94102', '90210', '92612', '91790', '91344', '92037'];
-
-    // Generate 70% profiles from California
-    for (let i = 0; i < 70; i++) {
-      const profile = {
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        profileName: faker.name.firstName(),
-        zipCode: faker.random.arrayElement(californiaZipCodes),
-        age: faker.datatype.number({ min: 18, max: 60 }),
-        gender: faker.random.arrayElement(['Male', 'Female', 'Non-Binary']),
-        cuisine: faker.helpers.shuffle(cuisineOptions).slice(0, faker.datatype.number({ min: 1, max: 3 })), // Select 1-3 random cuisines
-        photo: faker.image.avatar(),
-      };
-      sampleProfiles.push(profile);
-    }
-
-    // Generate 30% profiles from across the US
-    for (let i = 0; i < 30; i++) {
-      const profile = {
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        profileName: faker.name.firstName(),
-        zipCode: faker.address.zipCode(),
-        age: faker.datatype.number({ min: 18, max: 60 }),
-        gender: faker.random.arrayElement(['Male', 'Female', 'Non-Binary']),
-        cuisine: faker.helpers.shuffle(cuisineOptions).slice(0, faker.datatype.number({ min: 1, max: 3 })), // Select 1-3 random cuisines
-        photo: faker.image.avatar(),
-      };
-      sampleProfiles.push(profile);
-    }
 
     // Insert profiles into the database
     await UserProfile.insertMany(sampleProfiles);
-    console.log(`Inserted ${sampleProfiles.length} profiles successfully`);
+    console.log('Sample profiles inserted successfully');
   } catch (error) {
     console.error('Error seeding database:', error);
   } finally {
