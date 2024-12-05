@@ -30,6 +30,9 @@ function Navbar () {
       <li>
         <a href="/scroll">Swipe on Profiles</a>
       </li>
+      <li>
+        <a href="/recomend">Recomend a resturant</a>
+      </li>
       <div onClick={handleLogout}> 
         <li>
             <a href="/">Logout</a>
