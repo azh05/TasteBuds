@@ -13,11 +13,11 @@ function Recommend(user2) {
     const restaurants = {
       Italian: ["Enzo's Pizzeria", "Olive Garden", "Prince of Venice", "California Pizza Kitchen", "Maggiano's Little Italy", "Epicuria"],
       Chinese: ["Din Tai Fung", "Panda Express", "Golden Chopsticks", "P.F. Chang's", "Benihana", "Rendevous East"],
-      American: ["In-And-Out", "Cracker Barrel", "Texas Roadhouse", "McDonald's", "KFC"],
+      American: ["In-And-Out", "Cracker Barrel", "Texas Roadhouse", "McDonald's", "Denny's"],
       Indian: ["Bollywood Kitchen", "Downtown Dhaba", "Bollywood Bites", "Maharaja Cuisine"],
       Japanese: ["Nobu", "Gyu-Kaku", "Kura Sushi", "Marugame Udon", "Matsunoya Tonkatsu", "Coco Ichibanya", "Noma Sushi", "Midoh"],
       Mexican: ["Taco Bell", "Del Taco", "Chipotle", "El Pollo Loco", "Wahoo's Fish Taco", "Rubio's Coastal Grill"],
-      Other: ["Lee's Sandwich", "Jersey Mike's Subs", "Chuck E. Cheese", "Shakey's Pizza"],
+      Other: ["Lee's Sandwich", "Jersey Mike's Subs", "Chuck E. Cheese", "Shakey's Pizza", "KFC"],
     };
     
     // State to keep track of the current restaurant
