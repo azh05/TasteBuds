@@ -49,6 +49,7 @@ function ProfilePage()  {
     name: false,
     cuisine: false,
     bio: false,
+    icon: false,
 });
 const cuisineEditRef = useRef(null);
 const maxCharacters = 350;
@@ -288,16 +289,21 @@ const pickPhoto = () =>{
   };
 };
 
+
   return (
     <div >
         <Navbar></Navbar>
         <div className = "header-photo-container">
         <img id="header-photo" src={photo || Watermelon} alt="Header Photo" />
         </div>
-        <div className = "food-icon" onClick={() => setShowPicker(!showPicker)}>
+        <div className = {`food-icon ${editingState.icon ? 'hover-enabled' : ''}`} onClick={() => {
+            if (editingState.icon) {
+              setShowPicker(!showPicker);
+            }
+        }}>
             <span className="icon-display" >{profileData.icon}</span> 
         </div>
-        {showPicker && user.email == profileData.email &&(
+        {showPicker && user.email == profileData.email && editingState.icon &&(
             <div className="emoji-picker-container">
                 <Picker 
                     onEmojiClick={handleEmojiClick} 
@@ -318,7 +324,9 @@ const pickPhoto = () =>{
         ) : (
           <p className = "name" >{profileData.profileName},</p>
         )}
-        <p className = "name"> {profileData.age}</p>
+        {profileData.gender !== "preferNotToSay" && <p className="name">{profileData.gender.charAt(0).toUpperCase()+profileData.gender.slice(1)},</p>}
+        <p className='name'> Age {profileData.age}</p>
+
       </div>
       <div ref = {cuisineEditRef} className = "food-tags-display"> 
         <FoodTags 
