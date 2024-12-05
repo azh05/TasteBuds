@@ -12,7 +12,7 @@ import Mexican from "../mexican.jpg";
 import { BiFoodMenu } from 'react-icons/bi';
 
 
-function MatchedProfile({name, age, food}) {
+function MatchedProfile({name, age, food, mail}) {
 
     const pickPhoto = () =>{
         var favFood = food[0];
@@ -52,7 +52,7 @@ function MatchedProfile({name, age, food}) {
 
             </div>
             <div className="default" style={{ fontSize:"30px", marginRight:"20px"}}><b>{name}  {age}  </b> {food} </div>
-            <div className="hover" style={{ fontSize:"30px", marginRight:"20px"}}><b>{mail} </b></div>
+            <div className="hover" style={{ fontSize:"30px", marginRight:"20px"}}><b>{mail}</b></div>
         </div>
 
     );
