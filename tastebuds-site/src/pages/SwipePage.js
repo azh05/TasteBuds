@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from "react";
 import "../styles/swipe.css";
+<<<<<<< HEAD
 import SwipeProfile from "../components/SwipeProfile"; // Assuming this component handles the profile UI
 import { useUser } from "../userinfo/UserContext"; // To get the current user information
 import zipcodes from "zipcodes"; // Using the zipcodes package for city lookup
 import Navbar from '../components/navigationbar';
+=======
+import SwipeProfile from "../components/SwipeProfile";
+import { useUser } from "../userinfo/UserContext";
+import zipcodes from "zipcodes";
+import Navbar from "../components/navigationbar";
+>>>>>>> origin/MergeNavBar
 
 const SwipePage = () => {
-  const { user } = useUser(); // Current user info
-  const [profiles, setProfiles] = useState([]); // Profiles displayed in the swipe view
-  const [allProfiles, setAllProfiles] = useState([]); // All profiles fetched from the backend
-  const [cities, setCities] = useState([]); // Unique cities for the dropdown
-  const [selectedCity, setSelectedCity] = useState("All"); // Dropdown selection
-  const [isExiting, setIsExiting] = useState(false); // For exit animation
-  const [clickDirection, setClickDirection] = useState(""); // Direction of swipe (left or right)
-  const [currentIndex, setCurrentIndex] = useState(0); // For tracking the current profile index
-
-  const [profile, setProfile] = useState(
-    { profileName: "", age: "", foodList: []}
-); 
+  const { user } = useUser();
+  const [profiles, setProfiles] = useState([]);
+  const [allProfiles, setAllProfiles] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("All");
+  const [isExiting, setIsExiting] = useState(false);
+  const [clickDirection, setClickDirection] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Fetch all user profiles when the component mounts
+<<<<<<< HEAD
   useEffect(() => {
     fetch("http://localhost:5001/all_users") // Ensure this matches your backend URL
       .then((response) => response.json())
@@ -46,26 +50,55 @@ const SwipePage = () => {
                     setAvailableProfilesCount(availableCount);
                 })
     }, []);
+=======
+useEffect(() => {
+  fetch("http://localhost:5001/all_users") // Ensure this matches your backend URL
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((users) => {
+      if (Array.isArray(users)) {
+        // Filter out the current user's profile
+        const filteredUsers = users.filter((profile) => profile.email !== user.email);
 
-  // Function to get city from zip code using the zipcodes library
+        setAllProfiles(filteredUsers); // Store all other profiles
+        setProfiles(filteredUsers); // Display all other profiles initially
+
+        // Extract unique cities for the dropdown (including "All")
+        const uniqueCities = [
+          "All",
+          ...new Set(filteredUsers.map((user) => getCityFromZip(user.zipCode))),
+        ];
+        setCities(uniqueCities);
+      } else {
+        console.error("Invalid data format:", users);
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching profiles:", error);
+    });
+}, [user.email]);
+>>>>>>> origin/MergeNavBar
+
+
+  // Get city from zip code
   const getCityFromZip = (zipCode) => {
     const location = zipcodes.lookup(zipCode);
     return location ? location.city : "No city provided";
   };
 
-  // Handle city selection
+  // Handle city filter changes
   const handleCityChange = (event) => {
     const selected = event.target.value;
     setSelectedCity(selected);
 
-    let filteredProfiles = [];
-    if (selected === "All") {
-      filteredProfiles = allProfiles;
-    } else {
-      filteredProfiles = allProfiles.filter(
-        (profile) => getCityFromZip(profile.zipCode) === selected
-      );
-    }
+    const filteredProfiles =
+      selected === "All"
+        ? allProfiles
+        : allProfiles.filter((profile) => getCityFromZip(profile.zipCode) === selected);
 
     setProfiles(filteredProfiles); // Update displayed profiles
 
@@ -105,10 +138,9 @@ const SwipePage = () => {
     if (isExiting || currentIndex >= profiles.length) return; // Prevent swiping beyond the last profile
 
     handleLike(isLeft);
-    const direction = isLeft ? "left" : "right";
-    setClickDirection(direction);
+    setClickDirection(isLeft ? "left" : "right");
     setIsExiting(true);
-
+  
     setTimeout(() => {
         fetch(`http://localhost:5001/user?email=${user.email}&selected_city=${selectedCity}`)
             .then((response => response.json()))
@@ -121,21 +153,18 @@ const SwipePage = () => {
         setIsExiting(false);
         setClickDirection("");
     }, 400); // Match this to animation duration
-  };
+  };  
+  
 
+  // Listen for arrow keys
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "ArrowLeft") {
-        handleClick(true); // Simulate left button click
-      } else if (event.key === "ArrowRight") {
-        handleClick(false); // Simulate right button click
-      }
+      if (event.key === "ArrowLeft") handleClick(true);
+      if (event.key === "ArrowRight") handleClick(false);
     };
     window.addEventListener("keydown", handleKeyDown);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [currentIndex, isExiting]);
 
   // Get the number of profiles for the selected city

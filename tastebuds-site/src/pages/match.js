@@ -10,7 +10,7 @@ import Navbar from '../components/navigationbar';
 function Match() {
 
     const { user } = useUser();
-    const [info, setInfo] = useState([{ name: "Min Gao", age: "35", food: "Italian", email:"mingao@cs.ucla.edu" }]);
+    const [info, setInfo] = useState([{ name: "Min Gao", age: "35", cuisine:[], email: "mingao@cs.ucla.edu" }]);
 
     useEffect(() => {
         if (user) {
