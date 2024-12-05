@@ -39,44 +39,17 @@ function Recomend() {
         }
         if (user) {
           fetchProfile();
-        }}, [user]);
+        }}, [user]
+      );
 
-        const handleCuisineChange = (event) => {
-            const selectedCuisine = profileData.cuisine[0];
-            setCuisine(selectedCuisine);
-        
-            switch (selectedCuisine) {
-              case 'italian':
-                setRecommendation('Olive Garden');
-                break;
-              case 'chinese':
-                setRecommendation('Panda Express');
-                break;
-              case 'american':
-                setRecommendation('Hamburgers');
-                break;
-              default:
-                setRecommendation('');
-            }
-          };
+      
+
 
 
     return (
-    <div className="Recomend">
+    <div className="Recommend">
         <Navbar></Navbar>
-        <h1>Restaurant Recommendation</h1>
-        <p>Select your favorite cuisine:</p>
-        <select value={cuisine} onChange={handleCuisineChange}>
-          <option value="italian">Italian</option>
-          <option value="chinese">Chinese</option>
-          <option value="american">American</option>
-        </select>
-        {recommendation && (
-          <div>
-            <h2>We Recommend:</h2>
-            <p>{recommendation}</p>
-          </div>
-        )}
+        <div>My name is </div>
       </div>
     );
 }
