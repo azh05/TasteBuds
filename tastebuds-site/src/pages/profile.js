@@ -318,7 +318,9 @@ const pickPhoto = () =>{
         ) : (
           <p className = "name" >{profileData.profileName},</p>
         )}
-        <p className = "name"> {profileData.age}</p>
+        <p className="name">{profileData.gender.charAt(0).toUpperCase()+profileData.gender.slice(1)},</p>
+        <p className='name'> Age {profileData.age}</p>
+
       </div>
       <div ref = {cuisineEditRef} className = "food-tags-display"> 
         <FoodTags 
