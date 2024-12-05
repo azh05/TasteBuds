@@ -100,9 +100,8 @@ app.get('/user', async (req, res) => {
     
     if(!recUserEmail) { 
       res.status(200).json({ recUser: null, availableCount: availableCount } ); 
-      /* 
       // Pick a random email 
-      const currUserInteractions = currUser ?  currUser.recent_interactions : [];
+      /* const currUserInteractions = currUser ?  currUser.recent_interactions : [];
 
       const randomEmail = pickRandomUser(userProfiles, email, currUserInteractions);
 
@@ -123,7 +122,7 @@ app.get('/user', async (req, res) => {
         );
       }
 
-      res.status(200).json(randomUser); */
+      res.status(200).json({recUser: randomUser, availableCount: 12});*/
     } else {
       const recUser = await UserProfile.findOne({email: recUserEmail});
       if(currUser && currUser.recent_interactions && currUser.recent_interactions.length >= DELAY) {

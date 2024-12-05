@@ -22,7 +22,7 @@ function Navbar () {
   <div className="navbar-center">
     <ul className="nav-links">
       <li>
-        <a href="/profile">Edit my profile</a>
+        <a href={`/profile/${user.email}`}>Edit my profile</a>
       </li>
       <li>
         <a href="/match">View my matches</a>

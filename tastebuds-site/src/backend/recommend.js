@@ -54,10 +54,21 @@ function argmax(arr) {
 // user follows the UserProfile schema
 // Embed info into a 5D vector
 function embedUser(user) {
+    if(!user) {
+        return [0, 0, 0, 0, 0, 0];
+    }
+
     const { age, gender, cuisine, past_likes, past_dislikes, who_liked, email } = user;
 
     const genderID = gender ? genderChoices.indexOf(gender.toLowerCase()) : 0;
-    const cuisineID = cuisine ? cuisineChoices.indexOf(cuisine[0].toLowerCase()) : 0;
+
+    let cuisineID; 
+    if(Array.isArray(cuisine) && cuisine.length > 0) {
+        cuisineID = cuisine ? cuisineChoices.indexOf(cuisine[0].toLowerCase()) : 0;
+    } else {
+        cuisineID = 0;
+    }
+
     const past_likes_ID = past_likes ? past_likes.reduce((total, str) => total + hashCode(str) / 10000000000, 0) : 0;
     const past_dislikes_ID = past_dislikes ? past_dislikes.reduce((total, str) => total + hashCode(str) / 10000000000, 0) : 0;
     const who_liked_ID = who_liked ? who_liked.reduce((total, str) => total + hashCode(str) / 10000000000, 0) : 0;
@@ -79,13 +90,15 @@ function pickRandomUser(userList, userEmail, recent_interactions) {
 // Recommend the best user (their email) 
 function recommendUser(userList, userEmail) {
     // Getting the current User
-    const currentUser = userList.filter(obj => obj.email === userEmail)[0];
+    let currentUser = userList.filter(obj => obj.email === userEmail)[0];
     
     // if the user doesn't exist in the Database
     if(!currentUser) {
         // Add to the database and return someone random
         console.log("Current User DNE");
-        return { availableCount: 0, recUserEmail: userList[most_sim_idx].email};
+
+        currentUser = { recent_interactions: [], embed_vector: [0, 0, 1, 0, 0, 0]};
+        // return { availableCount: 0, recUserEmail: null};
     }
     
     // Getting emails of users that were recently seen
@@ -108,10 +121,8 @@ function recommendUser(userList, userEmail) {
         return cosineSimilarity(currentUser.embed_vector, candidate.embed_vector);
     });
 
-    
-    // Most similar user
     const most_sim_idx = argmax(cos_sims);
-
+    // Most similar user
     if(most_sim_idx == -1) {
         console.log("Cosine Sim Error");
         return { availableCount: userList.length, recUserEmail: null};
