@@ -31,7 +31,7 @@ function Navbar () {
         <a href="/scroll">Swipe on Profiles</a>
       </li>
       <li>
-        <a href="/recomend">Recomend a resturant</a>
+        <a href="/recommend">recommend a resturant</a>
       </li>
       <div onClick={handleLogout}> 
         <li>
