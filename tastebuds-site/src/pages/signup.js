@@ -98,7 +98,7 @@ const Signup = () => {
   return (
     <div className="div-container"> 
       <div className="signup-container">
-      <h2>Edit Your Profile</h2>
+      <h2>Create Your Profile</h2>
       <form className="signup-form" onSubmit={handleSaveProfile}>
       {error && (
           <p className="error-message" style={{ color: 'red' }}>
