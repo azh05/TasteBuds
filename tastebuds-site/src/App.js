@@ -10,7 +10,7 @@ import HomePage from './pages/home';  // Correct path for HomePage
 import SwipePage from './pages/SwipePage';
 import Match from './pages/match';
 import ProfilePage from './pages/profile';
-import Recomend from './pages/recommend'
+import Recommend from './pages/recommend'
 
 function App() {
   return (
@@ -25,6 +25,7 @@ function App() {
             <Route path="/scroll" element={<SwipePage />} /> {/* Scroll page route */}
             <Route path="/match" element={<Match />} /> {/* Matching page route */}
             <Route path="/profile/:email" element = {<ProfilePage />} /> {/* Profile page route */}
+            <Route path="/recommend" element = {<Recommend />} /> {/* Profile page route */}
         </Routes>
         </div>
       </Router>
