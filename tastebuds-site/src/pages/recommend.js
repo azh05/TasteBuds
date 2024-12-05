@@ -14,8 +14,8 @@ function Recommend(user2) {
       American: ["In-And-Out", "Cracker Barrel", "Texas Roadhouse", "McDonald's", "Denny's", "Rocco's"],
       Indian: ["Bollywood Kitchen", "Downtown Dhaba", "Bollywood Bites", "Maharaja Cuisine"],
       Japanese: ["Nobu", "Gyu-Kaku", "Kura Sushi", "Marugame Udon", "Matsunoya Tonkatsu", "Coco Ichibanya", "Noma Sushi", "Midoh"],
-      Mexican: ["Taco Bell", "Del Taco", "Chipotle", "El Pollo Loco", "Wahoo's Fish Taco", "Rubio's Coastal Grill"],
-      Other: ["Lee's Sandwich", "Jersey Mike's Subs", "Chuck E. Cheese", "Shakey's Pizza", "KFC"],
+      Mexican: ["Taco Bell", "Del Taco", "Chipotle", "El Pollo Loco", "Wahoo's Fish Taco", "Rubio's Coastal Grill", "Rendevous West"],
+      Other: ["Lee's Sandwich", "Jersey Mike's Subs", "Chuck E. Cheese", "Shakey's Pizza", "KFC", "De Neve", "The Drey", "Bruin Cafe"],
     };
     
     // State to keep track of the current restaurant
