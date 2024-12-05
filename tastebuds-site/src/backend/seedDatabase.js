@@ -13,10 +13,6 @@ async function seedDatabase() {
     });
     console.log('Connected to MongoDB');
 
-    // Clear existing database
-    await UserProfile.deleteMany({});
-    console.log('Cleared existing profiles from database');
-
     // Sample profiles
     const sampleProfiles = [
       {
