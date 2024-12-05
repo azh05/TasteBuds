@@ -40,7 +40,7 @@ const Signup = () => {
       return;
     }
     //zip code validation. must be 5 digits
-    if(/^\d{5}$/.test(String(zipCode)) && zipCode > 501) {
+    if(!(/^\d{5}$/.test(String(zipCode)) && zipCode > 501)) {
       setError('Your zip code must be 5 digits. Please try again.');
       setSuccess('');
       return;
