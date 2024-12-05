@@ -72,7 +72,7 @@
     top: -40px;
 }
 
-.food-icon :hover{
+.food-icon.hover-enabled :hover{
     background-color: rgba(0, 0, 0, 0.1);
 
 }
@@ -102,6 +102,17 @@
     font-size: 50px;
     font-family: Georgia, 'Times New Roman', Times, serif;
     
+}
+
+.email{
+    font-size: 25px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.email-container{
+    padding-left: 5%;
+    position: relative;
+    top: -35px;
 }
 
 .edit-button-container{

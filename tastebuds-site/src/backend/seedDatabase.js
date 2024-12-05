@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const UserProfile = require('./models/UserProfile');
 require('dotenv').config(); // Load environment variables
 
-MONGO_URI="mongodb+srv://alexren:alexren@tastebuds.3cfkg.mongodb.net/?retryWrites=true&w=majority&appName=tastebuds"
+const MONGO_URI = "mongodb+srv://alexren:alexren@tastebuds.3cfkg.mongodb.net/?retryWrites=true&w=majority&appName=tastebuds";
 
 async function seedDatabase() {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGO_URI || MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

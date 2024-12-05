@@ -51,7 +51,7 @@ function MatchedProfile({name, age, food, mail}) {
                 <img className="profile-img" src={pickPhoto()} alt="Circle" style={{ marginRight:"20px" }}></img>
 
             </div>
-            <div className="default" style={{ fontSize:"30px", marginRight:"20px"}}><b>{name}  {age}  </b> {food} </div>
+            <div className="default" style={{ fontSize:"30px", marginRight:"20px"}}><b>{name}  {age}  </b> {food.join(" ")} </div>
             <div className="hover" style={{ fontSize:"30px", marginRight:"20px"}}><b>{mail}</b></div>
         </div>
 
