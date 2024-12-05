@@ -24,7 +24,7 @@ function Navbar () {
       {user && (
               <>
                 <li>
-                  <a href={`/profile/${user.email}`}>Edit my profile</a>
+                  <a href="/profile/">Edit my profile</a>
                 </li>
                 <li>
                   <a href="/match">View my matches</a>
