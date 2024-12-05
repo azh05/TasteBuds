@@ -40,6 +40,34 @@
     
 }
 
+.default {
+    position: flex;
+    display: block;
+}
+
+.hover {
+    position: flex;
+    display: none;
+}
+
+.flex-container:hover .default{
+    display: none;
+}
+
+.flex-container:hover .hover{
+    display: block;
+    content: "hello";
+}
+
+/* .match-container::after {
+    display: inline-flex;
+    content: "hello"
+}
+
+.match-container:hover::after {
+    content: "goodbye"
+} */
+
 
 .icon-button{
     border: none;

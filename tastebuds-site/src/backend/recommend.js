@@ -1,5 +1,5 @@
 const genderChoices = ['preferNotToSay', 'male', 'female', 'nonBinary'];
-const cuisineChoices = ['italian', 'mexican', 'japanese', 'indian', 'chinese', 'american', 'other']
+const cuisineChoices = ['Italian', 'Mexican', 'Japanese', 'Indian', 'Chinese', 'American', 'Other']
 
 function hashCode(str) {
     if(!str) {

@@ -24,8 +24,7 @@ function App() {
             <Route path="/login" element={<Login />} /> {/* Login page route */}
             <Route path="/scroll" element={<SwipePage />} /> {/* Scroll page route */}
             <Route path="/match" element={<Match />} /> {/* Matching page route */}
-            <Route path="/profile" element = {<ProfilePage />} /> {/* Profile page route */}
-            <Route path="/recommend" element = {<Recomend />} /> {/* Recomendation page route */}
+            <Route path="/profile/:email" element = {<ProfilePage />} /> {/* Profile page route */}
         </Routes>
         </div>
       </Router>
