@@ -48,12 +48,6 @@ const Signup = () => {
 
     const emailExists = await fetch(`http://localhost:5001/profile?email=${email}`);
   
-    if (emailExists.ok) {
-      setError('User already exists.');
-      setSuccess('');
-      return;
-    }
-    else{
     try {
       // Send the data to the API
       const response = await fetch('http://localhost:5001/api/signup', {
@@ -94,7 +88,6 @@ const Signup = () => {
       setError(error.message);
       setSuccess('');
     };
-  };
 }
 
 
