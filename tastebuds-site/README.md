@@ -1,70 +1,31 @@
-# Getting Started with Create React App
+TasteBuds
+A Dating App for Foodies
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Description
+Users can create an account, log into their account, edit their profile, swipe on other profiles, and view their matches. A profile consists of an email, password, name, zip code, age, gender, and cuisine preferences. When swiping (liking or disliking) profiles, you can filter them by city. When you like someone, they are removed from the list of profiles you can view and a like is added to their profile, but when you dislike someone, they are kept in the rotation. When viewing your matches, you have the option to click on a match which will allow you to view their profile and have their email address as a means of contact. 
 
-## Available Scripts
+How to set up
+First ensure you have installed the most recent version of Node.js from https://nodejs.org/download/.
 
-In the project directory, you can run:
+To access TasteBuds please clone the git repository from GitHub:
+git clone https://github.com/azh05/TasteBuds/
 
-### `npm start`
+Then cd into the folder TasteBuds/tastebuds-site, which is where all of the source code is located:
+cd TasteBuds/tastebuds-site
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Install the necessary dependencies from package-lock.json:
+npm install
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Next you must start the backend by running npm start in the folder backend.  You can do this by running the commands:
+cd src/backend
+npm start
 
-### `npm test`
+Verify that the terminal says “Server running on port 5001. Connected to MongoDB.”
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Start the frontend in the tastebuds-site folder, assuming you are currently in backend:
+cd ../..
+npm  start
 
-### `npm run build`
+Verify that the terminal says “webpack compiled” and then it should open up a tab in your browser with the URL http://localhost:3000/.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+You should now be able to interact with the web application.
