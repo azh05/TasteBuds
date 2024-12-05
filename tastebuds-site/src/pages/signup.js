@@ -166,13 +166,13 @@ const Signup = () => {
           Cuisine Preferences:
           <select value={cuisine} onChange={(e) => setCuisine(e.target.value)}>
             <option value="">Select cuisine</option>
-            <option value="italian">Italian</option>
-            <option value="mexican">Mexican</option>
-            <option value="japanese">Japanese</option>
-            <option value="indian">Indian</option>
-            <option value="chinese">Chinese</option>
-            <option value="american">American</option>
-            <option value="other">Other</option>
+            <option value="Italian">Italian</option>
+            <option value="Mexican">Mexican</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Indian">Indian</option>
+            <option value="Chinese">Chinese</option>
+            <option value="American">American</option>
+            <option value="Other">Other</option>
           </select>
         </label>
 
