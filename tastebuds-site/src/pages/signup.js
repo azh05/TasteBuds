@@ -46,6 +46,14 @@ const Signup = () => {
       return;
     }
 
+    const emailExists = await fetch(`http://localhost:5001/profile?email=${email}`);
+  
+    if (emailExists.ok) {
+      setError('User already exists.');
+      setSuccess('');
+      return;
+    }
+    else{
     try {
       // Send the data to the API
       const response = await fetch('http://localhost:5001/api/signup', {
@@ -69,6 +77,7 @@ const Signup = () => {
         throw new Error('Failed to create the user.');
       }
 
+
       const data = await response.json();
       console.log('API Response:', data);
 
@@ -86,6 +95,8 @@ const Signup = () => {
       setSuccess('');
     };
   };
+}
+
 
   const handlePhotoChange = (event) => {
     setPhoto(event.target.files[0]);
