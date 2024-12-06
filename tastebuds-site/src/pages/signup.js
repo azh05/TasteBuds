@@ -12,9 +12,8 @@ const Signup = () => {
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
   const [cuisine, setCuisine] = useState('');
-  const [photo, setPhoto] = useState(null);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  // const [success, setSuccess] = useState('');
   const navigate = useNavigate(); // Initialize useNavigate
 
 
@@ -24,29 +23,28 @@ const Signup = () => {
     // Basic form validation
     if (!email || !password || !profileName || !zipCode || !age || !gender || !cuisine) {
       setError('Please fill out all fields.');
-      setSuccess('');
+      // setSuccess('');
       return;
     }
 
     //age validation
     if(age<18) {
       setError('TasteBuds is restricted to users 18+');
-      setSuccess('');
+      // setSuccess('');
       return;
     }
     if(age > 110) {
       setError('Please enter a valid age.');
-      setSuccess('');
+      // setSuccess('');
       return;
     }
     //zip code validation. must be 5 digits
     if(!(/^\d{5}$/.test(String(zipCode)) && zipCode > 501)) {
       setError('Your zip code must be 5 digits. Please try again.');
-      setSuccess('');
+      // setSuccess('');
       return;
     }
 
-    const emailExists = await fetch(`http://localhost:5001/profile?email=${email}`);
   
     try {
       // Send the data to the API
@@ -62,8 +60,7 @@ const Signup = () => {
           zipCode,
           age,
           gender,
-          cuisine,
-          photo,
+          cuisine
         }),
       });
 
@@ -79,21 +76,17 @@ const Signup = () => {
       const user = userCredential.user;
 
       console.log('User created:', user);
-      setSuccess('Profile successfully created!');
+      // setSuccess('Profile successfully created!');
       setError('');
       navigate('/');
 
     }  catch (error) {
       console.error('Error creating user:', error.message);
       setError(error.message);
-      setSuccess('');
+      // setSuccess('');
     };
 }
 
-
-  const handlePhotoChange = (event) => {
-    setPhoto(event.target.files[0]);
-  };
 
   return (
     <div className="div-container"> 

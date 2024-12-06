@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../App.css'; // Import CSS file for styling
-import Logout from '../components/Logout';
 
 function HomePage() {
   const [watermelons, setWatermelons] = useState([]);

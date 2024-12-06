@@ -14,7 +14,7 @@ app.use(express.json());
 
 // Simulate the signup route
 app.post('/api/signup', (req, res) => {
-  const { email, password, profileName, zipCode, age, gender, cuisine, photo } = req.body;
+  const { email, password, profileName, zipCode, age, gender, cuisine } = req.body;
 
   if (!email || !password || !profileName || !zipCode || !age || !gender || !cuisine) {
     return res.status(400).json({ message: 'Please fill out all fields.' });

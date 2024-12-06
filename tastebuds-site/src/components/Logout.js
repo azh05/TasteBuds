@@ -3,7 +3,7 @@ import { useUser } from '../userinfo/UserContext';
 
 
 function Logout() {
-    const { user, setUser } = useUser(); // Ensure you destructure correctly
+    const { setUser } = useUser(); // Ensure you destructure correctly
 
     const handleLogout = () => {
         console.log("Logged Out")

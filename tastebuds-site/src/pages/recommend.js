@@ -1,7 +1,6 @@
 import { useUser } from "../userinfo/UserContext";
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/navigationbar";
-import { Link } from 'react-router-dom';
 import "../styles/recommend.css"
 
 
@@ -14,7 +13,6 @@ function Recommend(user2) {
       profileName: '',
       cuisine: '',
     });
-    const options = ["Option 1", "Option 2", "Option 3", "Option 4"]; // Array of strings
         const [selectedOption, setSelectedOption] = useState(""); // State to store selected option
     const restaurants = {
       Italian: ["Enzo's Pizzeria", "Olive Garden", "Prince of Venice", "California Pizza Kitchen", "Maggiano's Little Italy", "Epicuria"],
@@ -25,9 +23,7 @@ function Recommend(user2) {
       Mexican: ["Taco Bell", "Del Taco", "Chipotle", "El Pollo Loco", "Wahoo's Fish Taco", "Rubio's Coastal Grill", "Rendevous West"],
       Other: ["Lee's Sandwich", "Jersey Mike's Subs", "Chuck E. Cheese", "Shakey's Pizza", "KFC", "De Neve", "The Drey", "Bruin Cafe"],
     };
-    
-    // State to keep track of the current restaurant
-    const [restaurant, setRestaurant] = useState("Click the button to pick a restaurant!");
+
 
     const [profileData, setProfileData] = useState({
         profileName: '',

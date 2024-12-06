@@ -6,7 +6,6 @@ import Indian from "../indian.jpg";
 import Italian from "../italian.jpg";
 import Japanese from "../japanese.jpg";
 import Mexican from "../mexican.jpg";
-import FoodTags from '../components/foodtags';
 
 import "../styles/swipe.css"
 function SwipeProfile({ name, age, image, clickFunction, foodList, className }) {
