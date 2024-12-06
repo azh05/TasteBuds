@@ -6,16 +6,19 @@ import "../styles/recommend.css"
 
 
 function Recommend(user2) {
+  // store user state, and resturant recommendation, default "Click the button to pick a restaurant!" if the button has not yet been clicked
     const { user } = useUser();
     const [MoreRec, setMoreRec] = useState("a");
     const [message, setMessage] = useState("Click the button to pick a restaurant!");
     const [names, setNames] = useState([]);
+    // store the name and preferred cuisine of users fetched from the backend databse (not the current logged-in user)
     const [match, setMatchName] = useState({
       profileName: '',
       cuisine: '',
     });
     const options = ["Option 1", "Option 2", "Option 3", "Option 4"]; // Array of strings
         const [selectedOption, setSelectedOption] = useState(""); // State to store selected option
+        // list of the best restaurants in America, and their respective cuisine
     const restaurants = {
       Italian: ["Enzo's Pizzeria", "Olive Garden", "Prince of Venice", "California Pizza Kitchen", "Maggiano's Little Italy", "Epicuria"],
       Chinese: ["Din Tai Fung", "Panda Express", "Golden Chopsticks", "P.F. Chang's", "Benihana", "Rendevous East"],
@@ -28,7 +31,8 @@ function Recommend(user2) {
     
     // State to keep track of the current restaurant
     const [restaurant, setRestaurant] = useState("Click the button to pick a restaurant!");
-
+    // stores the state of the currently logged in user, important atributes are the profileName and who_liked which contains the emails of all the users
+    // who have liked this user 
     const [profileData, setProfileData] = useState({
         profileName: '',
         age: '',
@@ -39,7 +43,7 @@ function Recommend(user2) {
         who_liked: [],
       });
       useEffect(() => {
-        // Fetch profile data
+        // Fetch user profile data
         const fetchProfile = async () => {
           try {
             const email = user.email;
@@ -52,6 +56,7 @@ function Recommend(user2) {
             setProfileData((prev) => ({
               ...data,
             }));
+            // throw an error if the profile data cannot be fetched
           } catch (error) {
             console.error('Error fetching profile data:', error);
           }
@@ -63,6 +68,7 @@ function Recommend(user2) {
 
       useEffect(() => {
         if (profileData.who_liked.length > 0) {
+          // 
           emailtoName();
         }
       }, [profileData.who_liked]);
@@ -79,6 +85,7 @@ function Recommend(user2) {
         }
       }, [selectedOption, names]);
       
+      // fetch the profileName and favorite cuisine based on the given email.
       const fetchName = async (matchEmail) => {
         try {
           const response = await fetch(`http://localhost:5001/profile?email=${matchEmail}`);
@@ -94,7 +101,7 @@ function Recommend(user2) {
       };
       
       
-      
+      // converts our user's array of matches in email format, to name & favorite cuisine format 
       const emailtoName = async () => {
         console.log("Fetching names from emails...");
         try {
@@ -152,7 +159,7 @@ function Recommend(user2) {
         setMoreRec("another");
       };
       
-
+      // handles the user's selection of a match from their list of matches, displays the name of who they have matched with
       const handleChange = (event) => {
         setMatchName(event.target.value); // Update state with selected option
         setSelectedOption(event.target.value);
