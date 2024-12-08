@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import "../styles/profile.css"
 import Picker from 'emoji-picker-react';
-import { FaBars } from 'react-icons/fa';
-import { MdEdit } from "react-icons/md";
 import { IoAdd } from "react-icons/io5";
 import Watermelon from "../watermelon.jpg";
 import American from "../american.jpg";
@@ -29,21 +27,12 @@ function ProfilePage()  {
     bio: '',
     icon: '',
   });
-  const [password, setPassword] = useState('');
-  const [profileName, setProfileName] = useState('Name');
-  const [zipCode, setZipCode] = useState('');
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState('');
-  const [cuisine, setCuisine] = useState([]);
+
   const [availableTags, setAvailableTags] = useState([]);
   const [photo, setPhoto] = useState(null);
-  const [icon, setIcon] = useState('🍉')
-  const [bio, setBio] = useState('Insert bio here...')
   const [showPicker, setShowPicker] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [canDelete, setCanDelete] = useState(true);
   const [canAddTag, setCanAddTag] = useState(false)
-  const [originalProfileName, setOriginalProfileName] = useState('');
   const [editOrSave, setEditOrSave] = useState ("Edit")
   const [editingState, setEditingState] = useState({
     name: false,
@@ -98,13 +87,13 @@ const maxCharacters = 350;
       document.removeEventListener('mousedown', handleClickOutside);
   };
 */
-}, [user]);
+}, [user, email]);
 
 useEffect(() => {
   if (profileData.cuisine && profileData.cuisine.length > 0) {
     pickPhoto();
   }
-}, [profileData.cuisine]);
+}, [profileData]);
 
 
 if (!user) {
@@ -147,15 +136,8 @@ const handleInputChange = (field, value) => {
 };
 
 
-  const handlePhotoChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setPhoto(URL.createObjectURL(file));
-    }
-  };
   
   const handleEmojiClick = (emojiObject) => {
-    setIcon(emojiObject.emoji);
     handleInputChange('icon', emojiObject.emoji);
     setShowPicker(false); // Close the picker after selecting an emoji
   };
@@ -167,10 +149,6 @@ const handleInputChange = (field, value) => {
     }));
   };
 
-  const handleEdit = () => {
-    setOriginalProfileName(profileName);
-    setIsEditing(true);
-  };
 
   const handleProfileNameChange = (event) => {
     handleInputChange('profileName', event.target.value);    // Update the profile name
@@ -294,7 +272,7 @@ const pickPhoto = () =>{
     <div >
         <Navbar></Navbar>
         <div className = "header-photo-container">
-        <img id="header-photo" src={photo || Watermelon} alt="Header Photo" />
+        <img id="header-photo" src={photo || Watermelon} alt="" />
         </div>
         <div className = {`food-icon ${editingState.icon ? 'hover-enabled' : ''}`} onClick={() => {
             if (editingState.icon) {
@@ -303,7 +281,7 @@ const pickPhoto = () =>{
         }}>
             <span className="icon-display" >{profileData.icon}</span> 
         </div>
-        {showPicker && user.email == profileData.email && editingState.icon &&(
+        {showPicker && user.email === profileData.email && editingState.icon &&(
             <div className="emoji-picker-container">
                 <Picker 
                     onEmojiClick={handleEmojiClick} 
@@ -381,7 +359,7 @@ const pickPhoto = () =>{
 
        {/* Save All Button */}
     <div className="save-all-button-container">
-      {user.email == profileData.email && (
+      {user.email === profileData.email && (
       <button className="save-all-button" onClick={handleSaveClick}>
         {editOrSave}
       </button>

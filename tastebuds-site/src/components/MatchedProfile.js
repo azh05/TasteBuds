@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React  from 'react';
 import '../App.css'; // Import CSS for external styling
 import "../styles/swipe.css"
 import "../styles/match.css"
@@ -9,7 +9,6 @@ import Indian from "../indian.jpg";
 import Italian from "../italian.jpg";
 import Japanese from "../japanese.jpg";
 import Mexican from "../mexican.jpg";
-import { BiFoodMenu } from 'react-icons/bi';
 
 
 function MatchedProfile({name, age, food, mail}) {

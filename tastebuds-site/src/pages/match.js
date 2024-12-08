@@ -33,7 +33,7 @@ function Match() {
 
             fetchData();
         } 
-    }, [])
+    }, [user])
 
 
     if (!user) {

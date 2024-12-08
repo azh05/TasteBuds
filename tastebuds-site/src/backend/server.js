@@ -28,10 +28,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 const PORT = process.env.PORT || 5001; //backend runs on port 5001
 
-
-// Connect to MongoDB
-console.log('MONGO_URI:', process.env.MONGO_URI); // Add this before connecting to MongoDB
-
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
