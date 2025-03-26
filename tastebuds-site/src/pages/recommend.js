@@ -162,7 +162,7 @@ function Recommend(user2) {
     return (
     <div>
       <Navbar></Navbar>
-      <div  className ="recommender" style={{ textAlign: "center", marginTop: "50px" }}>
+      <div  className ="recommender" style={{ textAlign: "center", marginTop: "50px", marginRight: "500px", marginLeft: "500px" }}>
       <h1>Select an match to eat out with</h1>
       <select className = "slector" value={selectedOption} onChange={handleChange}>
         <option value="" disabled>
